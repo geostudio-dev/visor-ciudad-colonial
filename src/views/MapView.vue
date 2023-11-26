@@ -1,6 +1,51 @@
 <template>
     <div id="layout">
-        <div id="sidebar">
+        <div id="sidebar" class="container">
+            <v-card
+                class="mx-auto"
+                max-width="500"
+                color="blue-grey-lighten-5"
+                variant="flat"
+            >
+                <v-card-item>
+                    <div>
+                        <v-img :src="session.logoPath" aspect-ratio="2.75" height="50px" max-height="50px"></v-img>
+                        <div class="text-overline mb-1">{{ session.name }}</div>
+                        <div class="text-h6 mb-1">{{ session.site }}</div>
+                        <div class="text-caption">{{ session.details }}</div>
+                    </div>
+                </v-card-item>
+                <v-divider></v-divider>
+                <v-card-title>
+                    <div class="text-h6 mb-1">{{ session.map }}</div>
+                </v-card-title>
+                <v-card-text>
+                    <v-expansion-panels>
+                        <v-expansion-panel
+                            title="Title"
+                            text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima"
+                        >
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <select v-model="currentCRS" class="mb-3">
+                        <option value="EPSG:3857">EPSG:3857</option>
+                        <option value="EPSG:2202">EPSG:2202</option>
+                    </select>
+                    Longitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
+                    Latitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
+                    Zoom: {{ location.zoom.toFixed(2) }} |
+                    <template v-if="location.bearing"> Bearing: {{ location.bearing.toFixed(2) }} | </template>
+                    <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
+                    <v-btn @click="location = { lng: -71.601944, lat: 10.631667, zoom: 11, pitch: 0, bearing: 0 }" class="ma-2" color="blue-grey-darken-4" >
+                        <v-icon icon="mdi-home"></v-icon>
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </div>
+        <!--div id="bottom" class="container">
             <select v-model="currentCRS" class="mb-3">
                 <option value="EPSG:3857">EPSG:3857</option>
                 <option value="EPSG:2202">EPSG:2202</option>
@@ -13,7 +58,7 @@
             <v-btn @click="location = { lng: -71.601944, lat: 10.631667, zoom: 11, pitch: 0, bearing: 0 }" class="ma-2" color="blue-grey-darken-4" >
             <v-icon icon="mdi-home"></v-icon>
             </v-btn>
-        </div>
+        </div-->
         <Map v-model="location" />
     </div>
 </template>
@@ -33,6 +78,15 @@ export default {
         // Define the EPSG:2202 projection
         proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
         return {
+            session: {
+                name: 'Sistema de Información Territorial - SIT',
+                site: 'Visor de Mapas | Consulta Ciudadana',
+                details: 'Alcaldía de Maracaibo - Centro de Procesamiento Urbano (CPU)',
+                logoPath: require('@/assets/alcaldia-de-maracaibo-logo-web.png'),
+                // map name fetched from GeoNode API
+                map: 'Ordenanza de Zonificación Urbana',
+
+            },
             location: {
                 lng: -71.601944,
                 lat: 10.631667,
@@ -73,6 +127,14 @@ export default {
 }
 
 #sidebar {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 30px;
+}
+
+#bottom {
   background-color: rgb(35 55 75 / 90%);
   color: #fff;
   padding: 6px 12px;
@@ -85,11 +147,6 @@ export default {
   margin: 30px;
   border-radius: 4px;
   text-align: right; /* Add this line */
-}
-
-#button:hover {
-  background-color: #fff;
-  color: #000;
 }
 
 select {
