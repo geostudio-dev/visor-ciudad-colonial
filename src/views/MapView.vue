@@ -1,6 +1,54 @@
 <template>
     <div id="layout">
-        <div id="sidebar" class="container">
+        <div class="container nav-bar" id="nav-bar">
+            <v-toolbar
+                color="blue-grey darken-4"
+                dark
+                flat
+            >
+                <v-toolbar-title class="ml-0 pl-3">
+                    <v-btn
+                        icon
+                        @click.stop="drawer = !drawer"
+                    >
+                        <v-icon>mdi-menu</v-icon>
+                    </v-btn>
+                    <span class="hidden-sm-and-down">Sistema de Información Territorial - SIT</span>
+                </v-toolbar-title>
+                <v-spacer></v-spacer>
+                <v-toolbar-items class="hidden-sm-and-down">
+                    <v-btn
+                        icon
+                        href="https://www.maracaibo.gob.ve/"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <v-icon>mdi-home</v-icon>
+                    </v-btn>
+                    <v-btn
+                        icon
+                        href="https://www.maracaibo.gob.ve/alcaldia/alcaldia-de-maracaibo"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <v-icon>mdi-information</v-icon>
+                    </v-btn>
+                    <v-btn
+                        icon
+                        href="https://www.maracaibo.gob.ve/alcaldia/alcaldia-de-maracaibo"
+                        target="_blank"
+                        rel="noopener"
+                    >
+                        <v-icon>mdi-account</v-icon>
+                    </v-btn>
+                </v-toolbar-items>
+            </v-toolbar>
+        </div>
+        <div class="container layer-controls" id="layer-controls"></div>
+        <div class="container search-pannel" id="search-pannel"></div>
+        <div class="container status-bar" id="status-bar"></div>
+        <!--div id="sidebar" class="container">
+            
             <v-card
                 class="mx-auto"
                 max-width="500"
@@ -44,7 +92,7 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
-        </div>
+        </div-->
         <!--div id="bottom" class="container">
             <select v-model="currentCRS" class="mb-3">
                 <option value="EPSG:3857">EPSG:3857</option>
@@ -121,9 +169,13 @@ export default {
 
 <style>
 #layout {
-  flex: 1;
-  display: flex;
-  position: relative;
+    display: grid;
+    
+}
+
+.container {
+    z-index: 1;
+    background-color: salmon;
 }
 
 #sidebar {
