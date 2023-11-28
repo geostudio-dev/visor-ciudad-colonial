@@ -1,6 +1,6 @@
 <template>
     <div id="layout">
-        <div class="container nav-bar" id="nav-bar">
+        <!--div class="container nav-bar" id="nav-bar">
             <v-toolbar
                 color="blue-grey darken-4"
                 dark
@@ -46,8 +46,8 @@
         </div>
         <div class="container layer-controls" id="layer-controls"></div>
         <div class="container search-pannel" id="search-pannel"></div>
-        <div class="container status-bar" id="status-bar"></div>
-        <!--div id="sidebar" class="container">
+        <div class="container status-bar" id="status-bar"></div-->
+        <div id="sidebar" class="container">
             
             <v-card
                 class="mx-auto"
@@ -92,8 +92,8 @@
                     </v-btn>
                 </v-card-actions>
             </v-card>
-        </div-->
-        <!--div id="bottom" class="container">
+        </div>
+        <div id="bottom" class="container">
             <select v-model="currentCRS" class="mb-3">
                 <option value="EPSG:3857">EPSG:3857</option>
                 <option value="EPSG:2202">EPSG:2202</option>
@@ -106,7 +106,7 @@
             <v-btn @click="location = { lng: -71.601944, lat: 10.631667, zoom: 11, pitch: 0, bearing: 0 }" class="ma-2" color="blue-grey-darken-4" >
             <v-icon icon="mdi-home"></v-icon>
             </v-btn>
-        </div-->
+        </div>
         <Map v-model="location" />
     </div>
 </template>
