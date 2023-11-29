@@ -25,7 +25,7 @@
                                 <!-- content of the panel... -->
                                 <v-row class="d-flex align-center justify-space-between">
                                     <v-col cols="10">
-                                        <v-slider color="indigo" v-model="sliderValue"></v-slider>
+                                        <v-slider color="indigo" min=0 max=1 v-model="layer.opacity"></v-slider>
                                     </v-col>
                                     <v-col cols="2">
                                         <v-switch color="indigo" v-model="layer.visibility" @change="$store.commit('toggleLayerVisibility', index)"></v-switch>
@@ -77,7 +77,7 @@ export default {
         // Define the EPSG:2202 projection
         proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
         return {
-            sliderValue: 100,
+            //sliderValue: 100,
             session: {
                 name: 'Sistema de Información Territorial - SIT',
                 site: 'Visor de Mapas | Consulta Ciudadana',
@@ -103,18 +103,9 @@ export default {
     },
     computed: {
         ...mapState(['mapLayers', 'selectedMap']),
-        /*: {
-            get() {
-            // Assuming 'this.index' is the index of the layer in the 'mapLayers' array
-                return this.mapLayers.map(layer => layer.opacity);
-            },
-            set(value) {
-                this.$store.commit('setLayerOpacity', { layerIndex: this.index, opacity: value / 100 });
-            },
-        },*/
     },
     mounted() {
-        console.log('mapLayers in parent component:', this.mapLayers); // print the value of mapLayers in the parent component
+        this.mapLayers = this.$store.state.mapLayers;  // Update `mapLayers` with the actual map layers from the Vuex store
     },
     watch: {
         location(newLocation) {
