@@ -1,6 +1,49 @@
 <template>
     <div id="layout">
-        <div id="sidebar">
+        <div id="sidebar" class="container">
+            <v-card variant="tonal" class="mx-auto" max-width="450" color="indigo">
+                <v-card-item>
+                    <div class="text-overline mb-1">
+                        {{ selectedMap.raw_abstract }}
+                    </div>
+                </v-card-item>
+                <v-card-title>
+                    <v-icon left>mdi-layers</v-icon>
+                    <div class="text-h6 mb-1">Capas</div>
+                </v-card-title>
+                <v-card-text>
+                    <v-expansion-panels>
+                        <v-expansion-panel v-for="layer in mapLayers" :key="layer.id" class="v-card">
+                            <v-expansion-panel-title>
+                                {{ layer.dataset.title }}
+                                <template v-slot:actions>
+                                    <v-icon color="indigo" icon="mdi-information">
+                                    </v-icon>
+                                </template>
+                            </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <!-- content of the panel... -->
+                                <v-row class="d-flex align-center justify-space-between">
+                                    <v-col cols="10">
+                                        <v-slider color="indigo" v-model="sliderValue"></v-slider>
+                                    </v-col>
+                                    <v-col cols="2">
+                                        <v-switch color="indigo" v-model="layer.visibility"></v-switch>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-text>
+                        </v-expansion-panel>
+                    </v-expansion-panels>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-btn icon @click="openDetails(map.detail_url)">
+                        <v-icon>mdi-information</v-icon>
+                    </v-btn>
+                </v-card-actions>
+            </v-card>
+        </div>
+        <div id="bottom" class="container">
             <select v-model="currentCRS" class="mb-3">
                 <option value="EPSG:3857">EPSG:3857</option>
                 <option value="EPSG:2202">EPSG:2202</option>
@@ -14,12 +57,13 @@
             <v-icon icon="mdi-home"></v-icon>
             </v-btn>
         </div>
-        <Map v-model="location" />
+        <Map v-model="location" :mapLayers="mapLayers" />
     </div>
 </template>
 
 <script>
 import proj4 from 'proj4';
+import { mapState } from 'vuex';
 
 import Map from "@/components/WebMap.vue";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -33,6 +77,16 @@ export default {
         // Define the EPSG:2202 projection
         proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
         return {
+            sliderValue: 100,
+            session: {
+                name: 'Sistema de Información Territorial - SIT',
+                site: 'Visor de Mapas | Consulta Ciudadana',
+                details: 'Alcaldía de Maracaibo - Centro de Procesamiento Urbano (CPU)',
+                logoPath: require('@/assets/alcaldia-de-maracaibo-logo-web.png'),
+                // map name fetched from GeoNode API
+                map: 'Ordenanza de Zonificación Urbana',
+
+            },
             location: {
                 lng: -71.601944,
                 lat: 10.631667,
@@ -46,6 +100,12 @@ export default {
             },
             currentCRS: 'EPSG:3857',
         };
+    },
+    computed: {
+        ...mapState(['mapLayers', 'selectedMap']),
+    },
+    mounted() {
+        console.log('mapLayers in parent component:', this.mapLayers); // print the value of mapLayers in the parent component
     },
     watch: {
         location(newLocation) {
@@ -61,18 +121,32 @@ export default {
             this.location.lng = convertedLocation[0];
             this.location.lat = convertedLocation[1];
         },
+        openDetails(detailUrl) {
+        window.open(`${detailUrl}/metadata_detail`, '_blank');
+        },
     },
 };
 </script>
 
 <style>
 #layout {
-  flex: 1;
-  display: flex;
-  position: relative;
+    display: grid;
+    
+}
+
+.container {
+    z-index: 1;
 }
 
 #sidebar {
+    z-index: 1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    margin: 30px;
+}
+
+#bottom {
   background-color: rgb(35 55 75 / 90%);
   color: #fff;
   padding: 6px 12px;
@@ -85,11 +159,6 @@ export default {
   margin: 30px;
   border-radius: 4px;
   text-align: right; /* Add this line */
-}
-
-#button:hover {
-  background-color: #fff;
-  color: #000;
 }
 
 select {
