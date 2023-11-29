@@ -43,6 +43,10 @@ export default {
                 const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
                 console.log(newUrl);
 
+                // Create variables for storing the "opacity" and "visibility" properties of each layer
+                const layerOpacity = layer.opacity;
+                const layerVisibility = layer.visibility ? 'visible' : 'none';
+
                 map.addSource(`wms-source-${index}`, {
                 'type': 'raster',
                 'tiles': [newUrl],
@@ -50,11 +54,17 @@ export default {
                 });
 
                 map.addLayer({
-                'id': `wms-layer-${index}`,
-                'type': 'raster',
-                'source': `wms-source-${index}`,
+                    'id': `wms-layer-${index}`,
+                    'type': 'raster',
+                    'source': `wms-source-${index}`,
+                    'paint': {
+                        'raster-opacity': layerOpacity, // Use the "opacity" variable to set the opacity of the layer
+                    },
+                    'layout': {
+                        'visibility': layerVisibility, // Use the "visibility" variable to set the visibility of the layer
+                    },
                 });
-            });
+            }, { deep: true });
             }
         });
 
@@ -84,7 +94,18 @@ export default {
             if (curr.pitch != next.pitch) map.setPitch(next.pitch)
             if (curr.bearing != next.bearing) map.setBearing(next.bearing)
             if (curr.zoom != next.zoom) map.setZoom(next.zoom)
-        }
+        },
+        '$store.state.mapLayers': {
+            deep: true,
+            handler(newMapLayers) {
+                newMapLayers.forEach((layer, index) => {
+                    if (this.map && this.map.getLayer(`wms-layer-${index}`)) {
+                        this.map.setLayoutProperty(`wms-layer-${index}`, 'visibility', layer.visibility ? 'visible' : 'none');
+                        this.map.setPaintProperty(`wms-layer-${index}`, 'raster-opacity', layer.opacity);
+                    }
+                });
+            },
+        },
     },
     methods: {
         getLocation() {

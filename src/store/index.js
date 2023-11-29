@@ -26,6 +26,14 @@ export default createStore({
     setMapLayers(state, mapLayers) {
       state.mapLayers = mapLayers;
     },
+    toggleLayerVisibility(state, layerIndex) {
+      if (state.mapLayers[layerIndex]) {
+        state.mapLayers[layerIndex].visibility = !state.mapLayers[layerIndex].visibility;
+      }
+    },
+    setLayerOpacity(state, { layerIndex, opacity }) {
+      state.mapLayers[layerIndex].opacity = opacity;
+    },
     // other mutations...
   },
   actions: {
