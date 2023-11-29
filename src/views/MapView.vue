@@ -28,7 +28,7 @@
                                         <v-slider color="indigo" v-model="sliderValue"></v-slider>
                                     </v-col>
                                     <v-col cols="2">
-                                        <v-switch color="indigo" v-model="layer.visibility"></v-switch>
+                                        <v-switch color="indigo" v-model="layer.visibility" @change="$store.commit('toggleLayerVisibility', index)"></v-switch>
                                     </v-col>
                                 </v-row>
                             </v-expansion-panel-text>
@@ -45,8 +45,8 @@
         </div>
         <div id="bottom" class="container">
             <select v-model="currentCRS" class="mb-3">
-                <option value="EPSG:3857">EPSG:3857</option>
-                <option value="EPSG:2202">EPSG:2202</option>
+                <option value="EPSG:3857">CRS WGS84</option>
+                <option value="EPSG:2202">CRS REGVEN</option>
             </select>
             Longitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
             Latitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
@@ -57,7 +57,7 @@
             <v-icon icon="mdi-home"></v-icon>
             </v-btn>
         </div>
-        <Map v-model="location" :mapLayers="mapLayers" />
+        <Map v-model="location" :mapLayers="mapLayers"  />
     </div>
 </template>
 
@@ -98,11 +98,20 @@ export default {
                 lng: 0,
                 lat: 0
             },
-            currentCRS: 'EPSG:3857',
+            currentCRS: 'EPSG:2202',
         };
     },
     computed: {
         ...mapState(['mapLayers', 'selectedMap']),
+        /*: {
+            get() {
+            // Assuming 'this.index' is the index of the layer in the 'mapLayers' array
+                return this.mapLayers.map(layer => layer.opacity);
+            },
+            set(value) {
+                this.$store.commit('setLayerOpacity', { layerIndex: this.index, opacity: value / 100 });
+            },
+        },*/
     },
     mounted() {
         console.log('mapLayers in parent component:', this.mapLayers); // print the value of mapLayers in the parent component
@@ -112,7 +121,7 @@ export default {
             // Reproject the coordinates to EPSG:2202 whenever the location changes
             const [lng, lat] = proj4('EPSG:3857', 'EPSG:2202', [newLocation.lng, newLocation.lat]);
             this.reprojectedLocation = { lng, lat };
-        }
+        },
     },
     methods: {
         switchCRS(crs) {
