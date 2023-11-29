@@ -1,94 +1,44 @@
 <template>
     <div id="layout">
-        <!--div class="container nav-bar" id="nav-bar">
-            <v-toolbar
-                color="blue-grey darken-4"
-                dark
-                flat
-            >
-                <v-toolbar-title class="ml-0 pl-3">
-                    <v-btn
-                        icon
-                        @click.stop="drawer = !drawer"
-                    >
-                        <v-icon>mdi-menu</v-icon>
-                    </v-btn>
-                    <span class="hidden-sm-and-down">Sistema de Información Territorial - SIT</span>
-                </v-toolbar-title>
-                <v-spacer></v-spacer>
-                <v-toolbar-items class="hidden-sm-and-down">
-                    <v-btn
-                        icon
-                        href="https://www.maracaibo.gob.ve/"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        <v-icon>mdi-home</v-icon>
-                    </v-btn>
-                    <v-btn
-                        icon
-                        href="https://www.maracaibo.gob.ve/alcaldia/alcaldia-de-maracaibo"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        <v-icon>mdi-information</v-icon>
-                    </v-btn>
-                    <v-btn
-                        icon
-                        href="https://www.maracaibo.gob.ve/alcaldia/alcaldia-de-maracaibo"
-                        target="_blank"
-                        rel="noopener"
-                    >
-                        <v-icon>mdi-account</v-icon>
-                    </v-btn>
-                </v-toolbar-items>
-            </v-toolbar>
-        </div>
-        <div class="container layer-controls" id="layer-controls"></div>
-        <div class="container search-pannel" id="search-pannel"></div>
-        <div class="container status-bar" id="status-bar"></div-->
         <div id="sidebar" class="container">
-            
-            <v-card
-                class="mx-auto"
-                max-width="500"
-                color="blue-grey-lighten-5"
-                variant="flat"
-            >
+            <v-card variant="tonal" class="mx-auto" max-width="450" color="indigo">
                 <v-card-item>
-                    <div>
-                        <v-img :src="session.logoPath" aspect-ratio="2.75" height="50px" max-height="50px"></v-img>
-                        <div class="text-overline mb-1">{{ session.name }}</div>
-                        <div class="text-h6 mb-1">{{ session.site }}</div>
-                        <div class="text-caption">{{ session.details }}</div>
+                    <div class="text-overline mb-1">
+                        {{ selectedMap.raw_abstract }}
                     </div>
                 </v-card-item>
-                <v-divider></v-divider>
                 <v-card-title>
-                    <div class="text-h6 mb-1">{{ session.map }}</div>
+                    <v-icon left>mdi-layers</v-icon>
+                    <div class="text-h6 mb-1">Capas</div>
                 </v-card-title>
                 <v-card-text>
                     <v-expansion-panels>
-                        <v-expansion-panel
-                            title="Title"
-                            text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi, ratione debitis quis est labore voluptatibus! Eaque cupiditate minima"
-                        >
+                        <v-expansion-panel v-for="layer in mapLayers" :key="layer.id" class="v-card">
+                            <v-expansion-panel-title>
+                                {{ layer.dataset.title }}
+                                <template v-slot:actions>
+                                    <v-icon color="indigo" icon="mdi-information">
+                                    </v-icon>
+                                </template>
+                            </v-expansion-panel-title>
+                            <v-expansion-panel-text>
+                                <!-- content of the panel... -->
+                                <v-row class="d-flex align-center justify-space-between">
+                                    <v-col cols="10">
+                                        <v-slider color="indigo" v-model="sliderValue"></v-slider>
+                                    </v-col>
+                                    <v-col cols="2">
+                                        <v-switch color="indigo" v-model="layer.visibility"></v-switch>
+                                    </v-col>
+                                </v-row>
+                            </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
-                    <select v-model="currentCRS" class="mb-3">
-                        <option value="EPSG:3857">EPSG:3857</option>
-                        <option value="EPSG:2202">EPSG:2202</option>
-                    </select>
-                    Longitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
-                    Latitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
-                    Zoom: {{ location.zoom.toFixed(2) }} |
-                    <template v-if="location.bearing"> Bearing: {{ location.bearing.toFixed(2) }} | </template>
-                    <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
-                    <v-btn @click="location = { lng: -71.601944, lat: 10.631667, zoom: 11, pitch: 0, bearing: 0 }" class="ma-2" color="blue-grey-darken-4" >
-                        <v-icon icon="mdi-home"></v-icon>
+                    <v-btn icon @click="openDetails(map.detail_url)">
+                        <v-icon>mdi-information</v-icon>
                     </v-btn>
                 </v-card-actions>
             </v-card>
@@ -107,12 +57,13 @@
             <v-icon icon="mdi-home"></v-icon>
             </v-btn>
         </div>
-        <Map v-model="location" />
+        <Map v-model="location" :mapLayers="mapLayers" />
     </div>
 </template>
 
 <script>
 import proj4 from 'proj4';
+import { mapState } from 'vuex';
 
 import Map from "@/components/WebMap.vue";
 import "mapbox-gl/dist/mapbox-gl.css";
@@ -126,6 +77,7 @@ export default {
         // Define the EPSG:2202 projection
         proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
         return {
+            sliderValue: 100,
             session: {
                 name: 'Sistema de Información Territorial - SIT',
                 site: 'Visor de Mapas | Consulta Ciudadana',
@@ -149,6 +101,12 @@ export default {
             currentCRS: 'EPSG:3857',
         };
     },
+    computed: {
+        ...mapState(['mapLayers', 'selectedMap']),
+    },
+    mounted() {
+        console.log('mapLayers in parent component:', this.mapLayers); // print the value of mapLayers in the parent component
+    },
     watch: {
         location(newLocation) {
             // Reproject the coordinates to EPSG:2202 whenever the location changes
@@ -163,6 +121,9 @@ export default {
             this.location.lng = convertedLocation[0];
             this.location.lat = convertedLocation[1];
         },
+        openDetails(detailUrl) {
+        window.open(`${detailUrl}/metadata_detail`, '_blank');
+        },
     },
 };
 </script>
@@ -175,7 +136,6 @@ export default {
 
 .container {
     z-index: 1;
-    background-color: salmon;
 }
 
 #sidebar {

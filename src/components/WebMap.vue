@@ -9,7 +9,7 @@ mapboxgl.accessToken = "pk.eyJ1IjoiZ2Vvc3R1ZGlvIiwiYSI6ImNrNWk5Mmp5eDBjNHQzbW10M
 
 export default {
     name: "WebMap",
-    props: ["modelValue"],
+    props: ["modelValue", "mapLayers"],
     data() {
         return {
             map: null,
@@ -18,6 +18,7 @@ export default {
         };
     },
     mounted() {
+        console.log('mapLayers in WebMap.vue:', this.mapLayers); // print the value of mapLayers in the WebMap.vue component
         const { lng, lat, zoom, bearing, pitch } = this.modelValue
 
         const map = new mapboxgl.Map({
@@ -32,21 +33,29 @@ export default {
         // Add navigation control (the +/- zoom buttons)
         map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-        // Add wms source
+        // Add wms source provided by the selected map
         map.on('load', () => {
-            map.addSource('wms-test', {
-                'type': 'raster',
-                'tiles': [
-                    'https://ec2-54-145-253-11.compute-1.amazonaws.com/geoserver/ows?service=WMS&version=1.1.0&request=GetMap&layers=geonode:comunas_maracaibo&styles=&bbox={bbox-epsg-3857}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true'
-                ],
-                'tileSize': 256
-            });
+            if (this.mapLayers) {
+            this.mapLayers.forEach((layer, index) => {
+                const baseUrl = 'https://ec2-54-145-253-11.compute-1.amazonaws.com/geoserver/ows';
+                const layerName = layer.dataset.alternate;
+                const bbox = '{bbox-epsg-3857}';
+                const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
+                console.log(newUrl);
 
-            map.addLayer({
-                'id': 'wms-test-layer',
+                map.addSource(`wms-source-${index}`, {
                 'type': 'raster',
-                'source': 'wms-test',
+                'tiles': [newUrl],
+                'tileSize': 256
+                });
+
+                map.addLayer({
+                'id': `wms-layer-${index}`,
+                'type': 'raster',
+                'source': `wms-source-${index}`,
+                });
             });
+            }
         });
 
         const updateLocation = () => this.$emit('update:modelValue', this.getLocation())

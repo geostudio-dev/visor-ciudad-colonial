@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="catalog-container">
         <v-card v-for="map in maps" :key="map.id" variant="tonal" class="mx-auto" max-width="450" color="indigo">
             <v-card-item>
                 <div class="text-overline mb-1">
@@ -13,7 +13,7 @@
             <!-- card content... -->
             <v-divider></v-divider>
             <v-card-actions class="d-flex justify-space-between">
-                <v-btn color="primary" @click="goToMapView(map.id)">Ver mapa</v-btn>
+                <v-btn color="primary" @click="goToMapView(map.pk)">Ver mapa</v-btn>
                 <v-btn icon @click="openDetails(map.detail_url)">
                     <v-icon>mdi-information</v-icon>
                 </v-btn>
@@ -32,8 +32,11 @@
     },
     // data, methods...
     methods: {
-        goToMapView(mapId) {
-        this.$router.push({ name: 'MapView', params: { id: mapId } });
+        goToMapView(pk) {
+            const selectedMap = this.maps.find(map => map.pk === pk);
+            console.log(selectedMap);
+            this.$store.commit('setSelectedMap', selectedMap);
+            this.$router.push({ name: 'Map' });
         },
         openDetails(detailUrl) {
         window.open(`${detailUrl}/metadata_detail`, '_blank');
@@ -43,7 +46,7 @@
 </script>
 
 <style>
-.container {
+.catalog-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
