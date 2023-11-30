@@ -1,26 +1,29 @@
 <template>
-  <router-view/>
+  <v-app>
+    <v-app-bar app color="indigo" :elevation="0">
+      <!-- Add your logo here -->
+      <template v-slot:prepend>
+        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+      </template>
+      <!--v-img
+        :src="require('@/assets/alcaldia-de-maracaibo-logo-web.png')"
+        alt="Alcaldía de Maracaibo"
+        max-height="35"
+      ></v-img-->
+      <v-toolbar-title class="text-overline">Visor de Consulta Ciudadana</v-toolbar-title>
+
+      <!-- Add spacer to push content to the right -->
+      <v-spacer></v-spacer>
+
+      <!-- Add your buttons here -->
+      <v-btn>Login</v-btn>
+      <v-btn icon>
+        <v-icon>mdi-information</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <router-view/>
+    </v-main>
+  </v-app>
 </template>
-
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
