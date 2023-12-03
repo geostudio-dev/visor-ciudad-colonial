@@ -128,6 +128,8 @@ export default {
                 .addTo(this.map);
             // Set the new marker as the map center
             this.map.setCenter(e.lngLat);
+            // Toggle the second drawer
+            this.$store.commit('toggleSecondDrawer');
         },
     },
 };
