@@ -36,7 +36,7 @@
           <v-expansion-panels>
             <v-expansion-panel class="v-card">
               <v-expansion-panel-title>
-                Searrch coordinates
+                Saved Searches
               </v-expansion-panel-title>
             </v-expansion-panel>
           </v-expansion-panels>
@@ -49,8 +49,29 @@
       </v-card>
     </v-navigation-drawer>
 
-    <v-navigation-drawer v-model="$store.state.secondDrawer" app location="right">
+    <v-navigation-drawer v-model="$store.state.secondDrawer" app location="right" width="300">
       <!-- Add your second drawer content here -->
+      <v-card class="d-flex flex-column fill-height mx-auto" variant="tonal" max-width="450" color="indigo">
+        <v-card-actions>
+          <v-btn icon="mdi-close" @click="closeSecondDrawer"></v-btn>
+        </v-card-actions>
+        <v-divider></v-divider>
+        <v-card-item>
+          <div class="text-overline mb-1">
+            lat: {{ markedCoordinate.lat.toFixed(4) }} - lng: {{ markedCoordinate.lng.toFixed(4) }}
+          </div>
+        </v-card-item>
+        <v-card-text>
+          <div v-for="(feature, index) in features" :key="index">
+            <h3>Feature {{ index + 1 }}</h3>
+              <p><strong>Type:</strong> {{ feature.type }}</p>
+              <p><strong>Properties:</strong></p>
+            <div v-for="(value, key) in feature.properties" :key="key">
+              <p>{{ key }}: {{ value }}</p>
+            </div>
+          </div>
+        </v-card-text>
+      </v-card>
     </v-navigation-drawer>
 
     <v-main class="router-countainer">
@@ -60,13 +81,21 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapState } from 'vuex';
+
 export default {
   data() {
     return {
       drawer: false,  // Initialize `drawer` to `false`
     };
   },
-  // ...
+  methods: {
+    ...mapMutations(['closeSecondDrawer']),
+  },
+  computed: {
+    ...mapGetters(['markedCoordinate']),
+    ...mapState(['features']),
+  },
 };
 </script>
 
