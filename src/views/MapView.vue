@@ -45,8 +45,9 @@
                         <v-col cols="10">
                             <v-select
                                 v-model="currentCRS"
-                                :items="['EPSG:3857', 'EPSG:2202']"
-                                label="Seleccione CRS"
+                                :items="items"
+                                :item-props="itemProps"
+                                label="Seleccione Sistema de Referencia"
                             ></v-select>
                         </v-col>
                         <v-col cols="2">
@@ -89,6 +90,10 @@ export default {
         proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
         return {
             currentCRS: 'EPSG:2202',
+            items: [
+                { text: 'CRS WGS84', value: 'EPSG:3857' },
+                { text: 'CRS REGVEN', value: 'EPSG:2202' },
+            ],
             session: {
                 name: 'Sistema de Información Territorial - SIT',
                 site: 'Visor de Mapas | Consulta Ciudadana',
@@ -125,6 +130,12 @@ export default {
         },
     },
     methods: {
+        itemProps(item) {
+            return {
+                title: item.text,
+                subtitle: item.value,
+            };
+        },
         switchCRS(crs) {
             this.currentCRS = crs;
             const convertedLocation = proj4(this.crs['EPSG:3857'], this.crs[this.currentCRS], [this.location.lng, this.location.lat]);
