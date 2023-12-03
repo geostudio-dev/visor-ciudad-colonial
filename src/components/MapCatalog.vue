@@ -34,7 +34,6 @@
     methods: {
         goToMapView(pk) {
             const selectedMap = this.maps.find(map => map.pk === pk);
-            console.log(selectedMap);
             this.$store.commit('setSelectedMap', selectedMap);
             this.$router.push({ name: 'Map' });
         },

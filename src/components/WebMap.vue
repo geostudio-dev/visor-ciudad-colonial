@@ -6,6 +6,8 @@
 <script>
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = "pk.eyJ1IjoiZ2Vvc3R1ZGlvIiwiYSI6ImNrNWk5Mmp5eDBjNHQzbW10M3d6NzI1Y28ifQ.MPmtingHT1zi_Wk5ZxW8wA"
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { mapMutations, mapActions } from 'vuex';
 
 export default {
     name: "WebMap",
@@ -18,7 +20,7 @@ export default {
         };
     },
     mounted() {
-        console.log('mapLayers in WebMap.vue:', this.mapLayers); // print the value of mapLayers in the WebMap.vue component
+        //console.log('mapLayers in WebMap.vue:', this.mapLayers); // print the value of mapLayers in the WebMap.vue component
         const { lng, lat, zoom, bearing, pitch } = this.modelValue
 
         const map = new mapboxgl.Map({
@@ -41,7 +43,7 @@ export default {
                 const layerName = layer.dataset.alternate;
                 const bbox = '{bbox-epsg-3857}';
                 const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
-                console.log(newUrl);
+                //console.log(newUrl);
 
                 // Create variables for storing the "opacity" and "visibility" properties of each layer
                 const layerOpacity = layer.opacity;
@@ -108,6 +110,8 @@ export default {
         },
     },
     methods: {
+        ...mapMutations(['markCoordinate']),
+        ...mapActions(['fetchFeatures']), // map the fetchFeatures action
         getLocation() {
             return {
             ...this.map.getCenter(),
@@ -119,17 +123,20 @@ export default {
         addMarker(e) {
             // Remove the old marker if it exists
             if (this.marker) {
-                this.marker.remove();
+            this.marker.remove();
             }
             
             // Create a new marker and add it to the map at the clicked location
             this.marker = new mapboxgl.Marker()
-                .setLngLat(e.lngLat)
-                .addTo(this.map);
+            .setLngLat(e.lngLat)
+            .addTo(this.map);
             // Set the new marker as the map center
             this.map.setCenter(e.lngLat);
+            const coordinate = { lat: e.lngLat.lat, lng: e.lngLat.lng };
+            this.markCoordinate(coordinate);
             // Toggle the second drawer
-            this.$store.commit('toggleSecondDrawer');
+            this.$store.commit('openSecondDrawer');
+            this.fetchFeatures(); // dispatch the fetchFeatures action
         },
     },
 };
