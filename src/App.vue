@@ -3,14 +3,11 @@
     <v-app-bar app color="indigo" :elevation="0">
       <!-- Add your logo here -->
       <template v-slot:prepend>
-        <v-app-bar-nav-icon></v-app-bar-nav-icon>
+        <v-btn icon @click="drawer = !drawer">
+          <v-icon>mdi-earth</v-icon>
+        </v-btn>
       </template>
-      <!--v-img
-        :src="require('@/assets/alcaldia-de-maracaibo-logo-web.png')"
-        alt="Alcaldía de Maracaibo"
-        max-height="35"
-      ></v-img-->
-      <v-toolbar-title class="text-overline">Visor de Consulta Ciudadana</v-toolbar-title>
+      <v-toolbar-title>Atlanti</v-toolbar-title>
 
       <!-- Add spacer to push content to the right -->
       <v-spacer></v-spacer>
@@ -22,8 +19,59 @@
       </v-btn>
     </v-app-bar>
 
-    <v-main>
+    <v-navigation-drawer v-model="drawer" app width="300">
+      <!-- Add your drawer content here -->
+      <v-card class="d-flex flex-column fill-height mx-auto" variant="tonal" max-width="450" color="indigo">
+        <v-card-item>
+          <div class="text-overline mb-1">
+            Title
+          </div>
+        </v-card-item>
+        <v-card-title>
+          <v-icon left>mdi-account-circle</v-icon>
+          <div class="text-h6 mb-1">Username</div>
+        </v-card-title>
+        <v-card-text>
+          <!-- content of the panel... -->
+          <v-expansion-panels>
+            <v-expansion-panel class="v-card">
+              <v-expansion-panel-title>
+                Searrch coordinates
+              </v-expansion-panel-title>
+            </v-expansion-panel>
+          </v-expansion-panels>
+        </v-card-text>
+        <v-divider></v-divider>
+        
+        <v-card-actions>
+          <v-btn to="/">Catálogo</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-navigation-drawer>
+
+    <v-navigation-drawer v-model="$store.state.secondDrawer" app location="right">
+      <!-- Add your second drawer content here -->
+    </v-navigation-drawer>
+
+    <v-main class="router-countainer">
       <router-view/>
     </v-main>
   </v-app>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      drawer: false,  // Initialize `drawer` to `false`
+    };
+  },
+  // ...
+};
+</script>
+
+<style scoped>
+.router-container {
+  height: calc(100vh - 64px); /* Adjust as needed */
+}
+</style>

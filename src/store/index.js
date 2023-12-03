@@ -6,6 +6,7 @@ export default createStore({
     maps: [],
     selectedMap: null,
     mapLayers: [],
+    secondDrawer: false,
     // other state properties...
   },
   getters: {
@@ -33,6 +34,9 @@ export default createStore({
     },
     setLayerOpacity(state, { layerIndex, opacity }) {
       state.mapLayers[layerIndex].opacity = opacity;
+    },
+    toggleSecondDrawer(state) {
+      state.secondDrawer = true;
     },
     // other mutations...
   },
