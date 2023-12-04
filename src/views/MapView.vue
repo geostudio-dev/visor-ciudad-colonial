@@ -2,7 +2,7 @@
     <div id="layout" class="d-flex">
         <!-- Map container -->
         <div ref="mapContainer" class="map-container">
-            <Map v-model="location" :mapLayers="mapLayers" />
+            <Map v-model="location" :mapLayers="mapLayers" ref="webMap" />
         </div>
         <div id="sidebar" class="container">
             <v-card variant="tonal" class="mx-auto" max-width="450" color="indigo">
@@ -43,25 +43,25 @@
                 <v-card-text>
                     <v-row class="d-flex align-center justify-space-between">
                         <v-col cols="5">
-                            <v-form @submit.prevent>
+                            <v-form @submit.prevent="reprojectAndEmit">
                                 <v-text-field
-                                    vm-model="reprojectedLocation.lng"
-                                    label="Longitud"
-                                    :rules="rules"
+                                v-model="reprojectedLocation.lat"
+                                label="Latitude"
+                                :rules="rules"
                                 ></v-text-field>
                             </v-form>
                         </v-col>
                         <v-col cols="5">
-                            <v-form @submit.prevent>
+                            <v-form @submit.prevent="reprojectAndEmit">
                                 <v-text-field
-                                    vm-model="reprojectedLocation.lat"
-                                    label="Latitud"
-                                    :rules="rules"
+                                v-model="reprojectedLocation.lng"
+                                label="Longitude"
+                                :rules="rules"
                                 ></v-text-field>
                             </v-form>
                         </v-col>
                         <v-col cols="2">
-                            <v-btn size="x-small" icon="mdi-crosshairs-question" color="indigo"></v-btn>
+                            <v-btn id="search-coordinate" size="x-small" icon="mdi-crosshairs-question" color="indigo" @click="reprojectAndEmit"></v-btn>
                         </v-col>
                     </v-row>
                 </v-card-text>
@@ -80,13 +80,13 @@
                         </v-col>
                     </v-row>
                 </v-card-text>
-                <v-card-text class="text-overline">
+                <!--v-card-text class="text-overline">
                     Longitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
                     Latitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
                     Zoom: {{ location.zoom.toFixed(2) }} |
                     <template v-if="location.bearing"> Bearing: {{ location.bearing.toFixed(2) }} | </template>
                     <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
-                </v-card-text>
+                </v-card-text-->
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-btn icon @click="openDetails(map.detail_url)">
@@ -116,7 +116,7 @@ export default {
         return {
             currentCRS: 'EPSG:2202',
             items: [
-                { text: 'CRS WGS84', value: 'EPSG:3857' },
+                { text: 'CRS WGS84', value: 'EPSG:4326' },
                 { text: 'CRS REGVEN', value: 'EPSG:2202' },
             ],
             session: {
@@ -136,8 +136,8 @@ export default {
                 zoom: 11,
             },
             reprojectedLocation: {
-                lng: 11307947.0053,
-                lat: 30.1650
+                lng: 215314.7633,
+                lat: 1176446.3765
             },
             rules: [
                 value => {
@@ -156,7 +156,7 @@ export default {
     watch: {
         location(newLocation) {
             // Reproject the coordinates to EPSG:2202 whenever the location changes
-            const [lng, lat] = proj4('EPSG:3857', 'EPSG:2202', [newLocation.lng, newLocation.lat]);
+            const [lng, lat] = proj4('EPSG:4326', 'EPSG:2202', [newLocation.lng, newLocation.lat]);
             this.reprojectedLocation = { lng, lat };
         },
     },
@@ -169,12 +169,18 @@ export default {
         },
         switchCRS(crs) {
             this.currentCRS = crs;
-            const convertedLocation = proj4(this.crs['EPSG:3857'], this.crs[this.currentCRS], [this.location.lng, this.location.lat]);
+            const convertedLocation = proj4(this.crs['EPSG:4326'], this.crs[this.currentCRS], [this.location.lng, this.location.lat]);
             this.location.lng = convertedLocation[0];
             this.location.lat = convertedLocation[1];
         },
         openDetails(detailUrl) {
-        window.open(`${detailUrl}/metadata_detail`, '_blank');
+            window.open(`${detailUrl}/metadata_detail`, '_blank');
+        },
+        reprojectAndEmit() {
+            const sourceProjection = 'EPSG:2202'; // adjust this value as needed
+            const targetProjection = 'EPSG:4326';
+            const [reprojectedLng, reprojectedLat] = proj4(sourceProjection, targetProjection, [parseFloat(this.reprojectedLocation.lng), parseFloat(this.reprojectedLocation.lat)]);
+            this.$refs.webMap.addMarker({ lngLat: { lat: reprojectedLat, lng: reprojectedLng } });
         },
     },
 };
