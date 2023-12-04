@@ -62,14 +62,23 @@
           </div>
         </v-card-item>
         <v-card-text>
-          <div v-for="(feature, index) in features" :key="index">
-            <h3>Feature {{ index + 1 }}</h3>
-              <p><strong>Type:</strong> {{ feature.type }}</p>
-              <p><strong>Properties:</strong></p>
-            <div v-for="(value, key) in feature.properties" :key="key">
-              <p>{{ key }}: {{ value }}</p>
-            </div>
-          </div>
+          <v-expansion-panels>
+            <v-expansion-panel v-for="(feature, index) in features" :key="index" class="v-card">
+              <v-expansion-panel-title>
+                <template v-slot:actions>
+                    <v-icon color="indigo" icon="mdi-map-plus" @click="traceFeature(feature.geometry)">
+                    </v-icon>
+                </template>
+                {{ feature.id }}
+              </v-expansion-panel-title>
+              <v-expansion-panel-text>
+                <p><strong>Properties:</strong></p>
+                <div v-for="(value, key) in feature.properties" :key="key">
+                  <p>{{ key }}: {{ value }}</p>
+                </div>
+              </v-expansion-panel-text>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </v-card-text>
       </v-card>
     </v-navigation-drawer>
@@ -81,7 +90,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapState } from 'vuex';
+import { mapGetters, mapMutations, mapState, mapActions } from 'vuex';
 
 export default {
   data() {
@@ -91,10 +100,11 @@ export default {
   },
   methods: {
     ...mapMutations(['closeSecondDrawer']),
+    ...mapActions(['traceFeature']),
   },
   computed: {
     ...mapGetters(['markedCoordinate']),
-    ...mapState(['features']),
+    ...mapState(['markedCoordinate', 'features']),
   },
 };
 </script>

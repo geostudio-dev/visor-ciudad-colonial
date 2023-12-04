@@ -7,7 +7,7 @@
 import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = "pk.eyJ1IjoiZ2Vvc3R1ZGlvIiwiYSI6ImNrNWk5Mmp5eDBjNHQzbW10M3d6NzI1Y28ifQ.MPmtingHT1zi_Wk5ZxW8wA"
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { mapMutations, mapActions } from 'vuex';
+import { mapMutations, mapActions, mapState } from 'vuex';
 
 export default {
     name: "WebMap",
@@ -17,10 +17,11 @@ export default {
             map: null,
             mapContainer: null,
             marker: null,
+            tracedFeatureId: null,
         };
     },
     mounted() {
-        //console.log('mapLayers in WebMap.vue:', this.mapLayers); // print the value of mapLayers in the WebMap.vue component
+        console.log('mapLayers in WebMap.vue:', this.mapLayers); // print the value of mapLayers in the WebMap.vue component
         const { lng, lat, zoom, bearing, pitch } = this.modelValue
 
         const map = new mapboxgl.Map({
@@ -108,6 +109,41 @@ export default {
                 });
             },
         },
+        tracedFeature(newFeature) {
+            if (this.tracedFeatureId) {
+                // Remove the old feature from the map
+                this.map.removeLayer(this.tracedFeatureId);
+                this.map.removeSource(this.tracedFeatureId);
+                }
+
+                // Generate a unique id for the new feature
+                this.tracedFeatureId = `feature-${Date.now()}`;
+
+                // Add the new feature to the map
+                this.map.addLayer({
+                id: this.tracedFeatureId,
+                type: 'fill', // adjust this value as needed
+                source: {
+                    type: 'geojson',
+                    data: newFeature,
+                },
+                paint: {
+                    'fill-color': '#888888', // adjust this value as needed
+                    'fill-opacity': 0.4, // adjust this value as needed
+                },
+            });
+        },
+        markedCoordinate() {
+            if (this.tracedFeatureId) {
+            // Remove the traced feature from the map
+            this.map.removeLayer(this.tracedFeatureId);
+            this.map.removeSource(this.tracedFeatureId);
+            this.tracedFeatureId = null;
+            }
+        },
+    },
+    computed: {
+        ...mapState(['markedCoordinate', 'tracedFeature']),
     },
     methods: {
         ...mapMutations(['markCoordinate']),

@@ -9,6 +9,7 @@ export default createStore({
     secondDrawer: false,
     markedCoordinate: { lat: 0, lng: 0 },
     features: [],
+    tracedFeature: null,
     // other state properties...
   },
   getters: {
@@ -50,7 +51,16 @@ export default createStore({
       console.log('markedCoordinate', state.markedCoordinate);
     },
     setFeatures(state, features) {
-      state.features = features;
+      state.features.push(...features);
+    },
+    resetFeatures(state) {
+      state.features = [];
+    },
+    setTracedFeature(state, geometry) {
+      state.tracedFeature = geometry;
+    },
+    resetTracedFeature(state) {
+      state.tracedFeature = null;
     },
     // other mutations...
   },
@@ -60,18 +70,33 @@ export default createStore({
       commit('setMaps', response.data.maps);
     },
     fetchFeatures({ state, commit }) {
+      commit('resetFeatures'); // reset features to an empty array
+  
       const coordinate = state.markedCoordinate;
       const wmsUrl = 'https://ec2-54-145-253-11.compute-1.amazonaws.com/geoserver/ows';
-      const layerName = 'geonode:comunas_maracaibo';
       const buffer = 0.01; // adjust this value as needed
-      // Construct the GetFeatureInfo URL
-      const getFeatureInfoUrl = `${wmsUrl}?service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layerName}&styles=&srs=EPSG:4326&format=image/png&bbox=${coordinate.lng - buffer},${coordinate.lat - buffer},${coordinate.lng + buffer},${coordinate.lat + buffer}&width=256&height=256&query_layers=${layerName}&info_format=application/json&x=128&y=128`;
-      axios.get(getFeatureInfoUrl).then(response => {
-        console.log('Queried', response);
-        commit('setFeatures', response.data.features);
-        console.log('features', state.features);
-      });
-    }
+  
+      // Loop over the mapLayers array
+      for (const layer of state.mapLayers) {
+        const layerName = layer.name;
+  
+        // Construct the GetFeatureInfo URL
+        const getFeatureInfoUrl = `${wmsUrl}?service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layerName}&styles=&srs=EPSG:4326&format=image/png&bbox=${coordinate.lng - buffer},${coordinate.lat - buffer},${coordinate.lng + buffer},${coordinate.lat + buffer}&width=256&height=256&query_layers=${layerName}&info_format=application/json&x=128&y=128`;
+  
+        axios.get(getFeatureInfoUrl).then(response => {
+          console.log('Queried', response);
+          commit('setFeatures', response.data.features);
+          console.log('features', state.features);
+        });
+      }
+    },
+    traceFeature({ commit }, geometry) {
+      commit('setTracedFeature', geometry);
+    },
+    markCoordinate({ commit }, coordinate) {
+      commit('setMarkedCoordinate', coordinate);
+      commit('resetTracedFeature');
+    },
     // other actions...
   },
   modules: {
