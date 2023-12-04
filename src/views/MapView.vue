@@ -42,6 +42,31 @@
                 <v-divider></v-divider>
                 <v-card-text>
                     <v-row class="d-flex align-center justify-space-between">
+                        <v-col cols="5">
+                            <v-form @submit.prevent>
+                                <v-text-field
+                                    vm-model="reprojectedLocation.lng"
+                                    label="Longitud"
+                                    :rules="rules"
+                                ></v-text-field>
+                            </v-form>
+                        </v-col>
+                        <v-col cols="5">
+                            <v-form @submit.prevent>
+                                <v-text-field
+                                    vm-model="reprojectedLocation.lat"
+                                    label="Latitud"
+                                    :rules="rules"
+                                ></v-text-field>
+                            </v-form>
+                        </v-col>
+                        <v-col cols="2">
+                            <v-btn size="x-small" icon="mdi-crosshairs-question" color="indigo"></v-btn>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
+                <v-card-text>
+                    <v-row class="d-flex align-center justify-space-between">
                         <v-col cols="10">
                             <v-select
                                 v-model="currentCRS"
@@ -114,6 +139,12 @@ export default {
                 lng: 11307947.0053,
                 lat: 30.1650
             },
+            rules: [
+                value => {
+                    if (value) return true
+                    return 'Coordenada requerida'
+                },
+            ],
         };
     },
     computed: {
