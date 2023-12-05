@@ -6,6 +6,7 @@ export default createStore({
     maps: [],
     selectedMap: null,
     mapLayers: [],
+    mapDatasets: [],
     secondDrawer: false,
     markedCoordinate: { lat: 0, lng: 0 },
     features: [],
@@ -27,10 +28,15 @@ export default createStore({
     setSelectedMap(state, map) {
       state.selectedMap = map;
       state.mapLayers = map.maplayers;
-      //console.log(state.mapLayers);
+      console.log('Map:', state.selectedMap);
     },
     setMapLayers(state, mapLayers) {
       state.mapLayers = mapLayers;
+      console.log('mapLayers in store:', state.mapLayers); // print the value of mapLayers in the store
+    },
+    setMapDatasets(state, datasets) {
+      state.mapDatasets = datasets;
+      console.log('mapDatasets in store:', state.mapDatasets); // print the value of mapLayers in the store
     },
     toggleLayerVisibility(state, layerIndex) {
       if (state.mapLayers[layerIndex]) {
@@ -51,7 +57,28 @@ export default createStore({
       console.log('markedCoordinate', state.markedCoordinate);
     },
     setFeatures(state, features) {
-      state.features.push(...features);
+      const modifiedFeatures = features.map(feature => {
+        // Remove unwanted characters from feature.id
+        const refactoredId = feature.id.split('.')[0];
+    
+        // Find the corresponding dataset
+        const correspondingDataset = state.mapDatasets.find(dataset => dataset.dataset.name === refactoredId);
+    
+        // If a corresponding dataset is found, append the corresponding dataset's attribute_Set to the feature's properties
+        if (correspondingDataset) {
+          feature.properties.attribute_set = correspondingDataset.dataset.attribute_set.map(attribute => {
+            return {
+              ...attribute,
+              value: feature.properties[attribute.attribute]
+            };
+          });
+        }
+    
+        return feature;
+      });
+    
+      // Push the modified features to the state
+      state.features.push(...modifiedFeatures);
     },
     resetFeatures(state) {
       state.features = [];
@@ -89,6 +116,14 @@ export default createStore({
           console.log('features', state.features);
         });
       }
+    },
+    async fetchDatasets({ commit, state }) {
+      const datasets = [];
+      for (const layer of state.mapLayers) {
+        const response = await axios.get(`https://ec2-54-145-253-11.compute-1.amazonaws.com/api/v2/datasets/${layer.dataset.pk}`);
+        datasets.push(response.data);
+      }
+      commit('setMapDatasets', datasets);
     },
     traceFeature({ commit }, geometry) {
       commit('setTracedFeature', geometry);

@@ -5,7 +5,7 @@
             <Map v-model="location" :mapLayers="mapLayers" ref="webMap" />
         </div>
         <div id="sidebar" class="container">
-            <v-card variant="tonal" class="mx-auto" max-width="450" color="indigo">
+            <v-card variant="tonal" class="mx-auto" max-width="400" color="indigo">
                 <v-tabs
                     v-model="tab"
                     bg-color="indigo"

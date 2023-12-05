@@ -23,7 +23,9 @@
 </template>
 
 <script>
-    export default {
+import { mapActions } from 'vuex';
+
+export default {
     props: {
         maps: {
         type: Array,
@@ -32,16 +34,18 @@
     },
     // data, methods...
     methods: {
+        ...mapActions(['fetchDatasets']),
         goToMapView(pk) {
             const selectedMap = this.maps.find(map => map.pk === pk);
             this.$store.commit('setSelectedMap', selectedMap);
+            this.fetchDatasets();
             this.$router.push({ name: 'Map' });
         },
         openDetails(detailUrl) {
         window.open(`${detailUrl}/metadata_detail`, '_blank');
         },
     },
-    };
+};
 </script>
 
 <style>
