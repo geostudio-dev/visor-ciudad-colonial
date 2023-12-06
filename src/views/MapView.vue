@@ -5,15 +5,78 @@
             <Map v-model="location" :mapLayers="mapLayers" ref="webMap" />
         </div>
         <div id="sidebar" class="container">
-            <v-card variant="tonal" class="mx-auto" max-width="450" color="indigo">
+            <v-card variant="tonal" class="mx-auto" max-width="400" color="indigo">
+                <v-tabs
+                    v-model="tab"
+                    bg-color="indigo"
+                    align-tabs="center"
+                >
+                    <v-tab value="place">Buscar lugar</v-tab>
+                    <v-tab value="coordinate">Buscar coordenada</v-tab>
+                </v-tabs>
+                <v-card-text>
+                    <v-window v-model="tab">
+                        <v-window-item value="place">
+                            <v-form>
+                                <v-row class="d-flex align-center justify-space-between">
+                                    <v-col cols="10">
+                                        <v-text-field label="Lugar" prepend-icon="mdi-map-marker"></v-text-field>
+                                    </v-col>
+                                    <v-col cols="2">
+                                        <v-btn id="search-place" size="x-small" icon="mdi-map-search" color="indigo"></v-btn>
+                                    </v-col>
+                                </v-row>
+                            </v-form>
+                            <div class="text-caption">
+                                Latitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
+                                Longitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
+                                Zoom: {{ location.zoom.toFixed(2) }} 
+                                <template v-if="location.bearing">| Bearing: {{ location.bearing.toFixed(2) }} | </template>
+                                <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
+                            </div>
+                        </v-window-item>
+                        <v-window-item value="coordinate">
+                            <v-row class="d-flex align-center justify-space-between">
+                                <v-col cols="5">
+                                    <v-form @submit.prevent="reprojectAndEmit">
+                                        <v-text-field
+                                        v-model="reprojectedLocation.lat"
+                                        label="Latitude"
+                                        :rules="rules"
+                                        ></v-text-field>
+                                    </v-form>
+                                </v-col>
+                                <v-col cols="5">
+                                    <v-form @submit.prevent="reprojectAndEmit">
+                                        <v-text-field
+                                        v-model="reprojectedLocation.lng"
+                                        label="Longitude"
+                                        :rules="rules"
+                                        ></v-text-field>
+                                    </v-form>
+                                </v-col>
+                                <v-col cols="2">
+                                    <v-btn id="search-coordinate" size="x-small" icon="mdi-crosshairs-question" color="indigo" @click="reprojectAndEmit"></v-btn>
+                                </v-col>
+                            </v-row>
+                        </v-window-item>
+                    </v-window>
+                </v-card-text>
+                <v-divider></v-divider>
                 <v-card-item>
-                    <div class="text-overline mb-1">
+                    <div class="text-caption mb-1">
                         {{ selectedMap.raw_abstract }}
                     </div>
                 </v-card-item>
                 <v-card-title>
-                    <v-icon left>mdi-layers</v-icon>
-                    <div class="text-h6 mb-1">Capas</div>
+                    <v-row class="d-flex align-center justify-space-between">
+                        <v-col cols="10">
+                            <div class="text-h6 mb-1">Capas</div>
+                        </v-col>
+                        <v-col cols="2">
+                            <v-icon left>mdi-layers</v-icon>
+                        </v-col>
+                    </v-row>
                 </v-card-title>
                 <v-card-text>
                     <v-expansion-panels>
@@ -40,32 +103,7 @@
                     </v-expansion-panels>
                 </v-card-text>
                 <v-divider></v-divider>
-                <v-card-text>
-                    <v-row class="d-flex align-center justify-space-between">
-                        <v-col cols="5">
-                            <v-form @submit.prevent="reprojectAndEmit">
-                                <v-text-field
-                                v-model="reprojectedLocation.lat"
-                                label="Latitude"
-                                :rules="rules"
-                                ></v-text-field>
-                            </v-form>
-                        </v-col>
-                        <v-col cols="5">
-                            <v-form @submit.prevent="reprojectAndEmit">
-                                <v-text-field
-                                v-model="reprojectedLocation.lng"
-                                label="Longitude"
-                                :rules="rules"
-                                ></v-text-field>
-                            </v-form>
-                        </v-col>
-                        <v-col cols="2">
-                            <v-btn id="search-coordinate" size="x-small" icon="mdi-crosshairs-question" color="indigo" @click="reprojectAndEmit"></v-btn>
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-                <v-card-text>
+                <v-card-actions>
                     <v-row class="d-flex align-center justify-space-between">
                         <v-col cols="10">
                             <v-select
@@ -76,22 +114,9 @@
                             ></v-select>
                         </v-col>
                         <v-col cols="2">
-                            <v-btn size="x-small" icon="mdi-home" @click="location = { lng: -71.601944, lat: 10.631667, zoom: 11, pitch: 0, bearing: 0 }" color="indigo"></v-btn>
+                            <v-btn size="small" icon="mdi-home" @click="location = { lng: -71.601944, lat: 10.631667, zoom: 11, pitch: 0, bearing: 0 }" color="indigo"></v-btn>
                         </v-col>
                     </v-row>
-                </v-card-text>
-                <!--v-card-text class="text-overline">
-                    Longitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
-                    Latitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
-                    Zoom: {{ location.zoom.toFixed(2) }} |
-                    <template v-if="location.bearing"> Bearing: {{ location.bearing.toFixed(2) }} | </template>
-                    <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
-                </v-card-text-->
-                <v-divider></v-divider>
-                <v-card-actions>
-                    <v-btn icon @click="openDetails(map.detail_url)">
-                        <v-icon>mdi-information</v-icon>
-                    </v-btn>
                 </v-card-actions>
             </v-card>
         </div>
@@ -116,8 +141,8 @@ export default {
         return {
             currentCRS: 'EPSG:2202',
             items: [
-                { text: 'CRS WGS84', value: 'EPSG:4326' },
-                { text: 'CRS REGVEN', value: 'EPSG:2202' },
+                { text: 'WGS84', value: 'EPSG:4326' },
+                { text: 'REGVEN', value: 'EPSG:2202' },
             ],
             session: {
                 name: 'Sistema de Información Territorial - SIT',
@@ -145,6 +170,7 @@ export default {
                     return 'Coordenada requerida'
                 },
             ],
+            tab: null,
         };
     },
     computed: {

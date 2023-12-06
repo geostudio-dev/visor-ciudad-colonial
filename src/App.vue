@@ -66,15 +66,13 @@
             <v-expansion-panel v-for="(feature, index) in features" :key="index" class="v-card">
               <v-expansion-panel-title>
                 <template v-slot:actions>
-                    <v-icon color="indigo" icon="mdi-map-plus" @click="traceFeature(feature.geometry)">
-                    </v-icon>
+                  <v-icon color="indigo" icon="mdi-plus" @click="traceFeature(feature.geometry)"></v-icon>
                 </template>
-                {{ feature.id }}
+                {{ firstVisibleAttributes[index].attribute_label }}
               </v-expansion-panel-title>
               <v-expansion-panel-text>
-                <p><strong>Properties:</strong></p>
-                <div v-for="(value, key) in feature.properties" :key="key">
-                  <p>{{ key }}: {{ value }}</p>
+                <div v-for="attribute in visibleAttributes[index]" :key="attribute.attribute">
+                  <p><strong>{{ attribute.attribute_label }}: </strong>{{ attribute.value }}</p>
                 </div>
               </v-expansion-panel-text>
             </v-expansion-panel>
@@ -105,6 +103,16 @@ export default {
   computed: {
     ...mapGetters(['markedCoordinate']),
     ...mapState(['markedCoordinate', 'features']),
+    visibleAttributes() {
+      return this.features.map(feature => {
+        return feature.properties.attribute_set.filter(attribute_set => attribute_set.visible);
+      });
+    },
+    firstVisibleAttributes() {
+      return this.visibleAttributes.map(attributes => {
+        return attributes.sort((a, b) => a.display_order - b.display_order)[0];
+      });
+    },
   },
 };
 </script>
