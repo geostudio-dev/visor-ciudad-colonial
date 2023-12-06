@@ -68,7 +68,7 @@
                 <template v-slot:actions>
                   <v-icon color="indigo" icon="mdi-plus" @click="traceFeature(feature.geometry)"></v-icon>
                 </template>
-                {{ firstVisibleAttributes[index].attribute_label }}
+                {{ firstVisibleAttributes[index].attribute_label }} | {{ firstVisibleAttributes[index].value }}
               </v-expansion-panel-title>
               <v-expansion-panel-text>
                 <div v-for="attribute in visibleAttributes[index]" :key="attribute.attribute">

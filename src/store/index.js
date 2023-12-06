@@ -27,8 +27,18 @@ export default createStore({
     },
     setSelectedMap(state, map) {
       state.selectedMap = map;
-      state.mapLayers = map.maplayers;
+      state.mapLayers = map.maplayers.map(layer => {
+        const legendLinks = layer.dataset.links.filter(link => link.name === 'Legend');
+        return {
+          ...layer,
+          dataset: {
+            ...layer.dataset,
+            links: legendLinks
+          }
+        };
+      });
       console.log('Map:', state.selectedMap);
+      console.log('mapLayers in store:', state.mapLayers); // print the value of mapLayers in the store
     },
     setMapLayers(state, mapLayers) {
       state.mapLayers = mapLayers;
