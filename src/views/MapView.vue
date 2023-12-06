@@ -92,12 +92,13 @@
                                 <!-- content of the panel... -->
                                 <v-row class="d-flex align-center justify-space-between">
                                     <v-col cols="10">
-                                        <v-slider color="indigo" min=0 max=1 v-model="layer.opacity"></v-slider>
+                                        <v-slider color="indigo" min=0 max=1 v-model="layer.opacity" :disabled="!layer.visibility"></v-slider>
                                     </v-col>
                                     <v-col cols="2">
                                         <v-switch color="indigo" v-model="layer.visibility" @change="$store.commit('toggleLayerVisibility', index)"></v-switch>
                                     </v-col>
                                 </v-row>
+                                <v-img :src="layer.dataset.links[0].url" :width=150></v-img>
                             </v-expansion-panel-text>
                         </v-expansion-panel>
                     </v-expansion-panels>
