@@ -39,7 +39,7 @@ export default {
         // Add wms source provided by the selected map
         map.on('load', () => {
             if (this.mapLayers) {
-            this.mapLayers.forEach((layer, index) => {
+                [...this.mapLayers].reverse().forEach((layer, index) => {
                 const baseUrl = 'https://ec2-54-145-253-11.compute-1.amazonaws.com/geoserver/ows';
                 const layerName = layer.dataset.alternate;
                 const bbox = '{bbox-epsg-3857}';

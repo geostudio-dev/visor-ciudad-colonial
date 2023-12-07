@@ -40,6 +40,9 @@ export default createStore({
       console.log('Map:', state.selectedMap);
       console.log('mapLayers in store:', state.mapLayers); // print the value of mapLayers in the store
     },
+    clearSelectedMap(state) {
+      state.selectedMap = null;
+    },
     setMapLayers(state, mapLayers) {
       state.mapLayers = mapLayers;
       console.log('mapLayers in store:', state.mapLayers); // print the value of mapLayers in the store

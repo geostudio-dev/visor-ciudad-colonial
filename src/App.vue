@@ -7,7 +7,7 @@
           <v-icon>mdi-earth</v-icon>
         </v-btn>
       </template>
-      <v-toolbar-title>Atlanti</v-toolbar-title>
+      <v-toolbar-title>{{ title }}</v-toolbar-title>
 
       <!-- Add spacer to push content to the right -->
       <v-spacer></v-spacer>
@@ -112,6 +112,9 @@ export default {
       return this.visibleAttributes.map(attributes => {
         return attributes.sort((a, b) => a.display_order - b.display_order)[0];
       });
+    },
+    title() {
+      return this.$store.state.selectedMap ? this.$store.state.selectedMap.raw_abstract : 'Atlanti';
     },
   },
 };
