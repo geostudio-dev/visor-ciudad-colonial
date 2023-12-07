@@ -19,6 +19,11 @@ export default {
   mounted() {
     this.$store.dispatch('fetchMaps');
   },
+  beforeRouteEnter(to, from, next) {
+  next(vm => {
+    vm.$store.commit('clearSelectedMap');
+  });
+},
   // props, data, methods...
 };
 </script>

@@ -63,11 +63,6 @@
                     </v-window>
                 </v-card-text>
                 <v-divider></v-divider>
-                <v-card-item>
-                    <div class="text-caption mb-1">
-                        {{ selectedMap.raw_abstract }}
-                    </div>
-                </v-card-item>
                 <v-card-title>
                     <v-row class="d-flex align-center justify-space-between">
                         <v-col cols="10">
