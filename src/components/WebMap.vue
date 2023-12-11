@@ -40,7 +40,7 @@ export default {
         map.on('load', () => {
             if (this.mapLayers) {
                 [...this.mapLayers].reverse().forEach((layer, index) => {
-                const baseUrl = 'https://ec2-54-145-253-11.compute-1.amazonaws.com/geoserver/ows';
+                const baseUrl = 'https://mapas.alcaldiademaracaibo.org/geoserver/ows';
                 const layerName = layer.dataset.alternate;
                 const bbox = '{bbox-epsg-3857}';
                 const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
