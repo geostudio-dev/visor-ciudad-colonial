@@ -106,14 +106,14 @@ export default createStore({
   },
   actions: {
     async fetchMaps({ commit }) {
-      const response = await axios.get("https://ec2-54-145-253-11.compute-1.amazonaws.com/api/v2/maps");
+      const response = await axios.get("https://mapas.alcaldiademaracaibo.org/api/v2/maps");
       commit('setMaps', response.data.maps);
     },
     fetchFeatures({ state, commit }) {
       commit('resetFeatures'); // reset features to an empty array
   
       const coordinate = state.markedCoordinate;
-      const wmsUrl = 'https://ec2-54-145-253-11.compute-1.amazonaws.com/geoserver/ows';
+      const wmsUrl = 'https://mapas.alcaldiademaracaibo.org/geoserver/ows';
       const buffer = 0.01; // adjust this value as needed
   
       // Loop over the mapLayers array
@@ -133,7 +133,7 @@ export default createStore({
     async fetchDatasets({ commit, state }) {
       const datasets = [];
       for (const layer of state.mapLayers) {
-        const response = await axios.get(`https://ec2-54-145-253-11.compute-1.amazonaws.com/api/v2/datasets/${layer.dataset.pk}`);
+        const response = await axios.get(`https://mapas.alcaldiademaracaibo.org/api/v2/datasets/${layer.dataset.pk}`);
         datasets.push(response.data);
       }
       commit('setMapDatasets', datasets);
