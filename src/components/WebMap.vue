@@ -8,11 +8,13 @@ import mapboxgl from "mapbox-gl";
 mapboxgl.accessToken = "pk.eyJ1IjoiZ2Vvc3R1ZGlvIiwiYSI6ImNrNWk5Mmp5eDBjNHQzbW10M3d6NzI1Y28ifQ.MPmtingHT1zi_Wk5ZxW8wA"
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { mapMutations, mapActions, mapState } from 'vuex';
+import proj4 from 'proj4';
 
 export default {
     name: "WebMap",
     props: ["modelValue", "mapLayers"],
     data() {
+        proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
         return {
             map: null,
             mapContainer: null,
@@ -157,19 +159,36 @@ export default {
             }
         },
         addMarker(e) {
+            // Log the e.lngLat object
+            console.log('e.lngLat:', e.lngLat);
+            
             // Remove the old marker if it exists
             if (this.marker) {
-            this.marker.remove();
+                this.marker.remove();
             }
-            
+
             // Create a new marker and add it to the map at the clicked location
             this.marker = new mapboxgl.Marker()
-            .setLngLat(e.lngLat)
-            .addTo(this.map);
+                .setLngLat(e.lngLat)
+                .addTo(this.map);
+
             // Set the new marker as the map center
             this.map.setCenter(e.lngLat);
+
             const coordinate = { lat: e.lngLat.lat, lng: e.lngLat.lng };
-            this.markCoordinate(coordinate);
+
+            // Log the coordinate object
+            console.log('coordinate:', coordinate);
+
+            const sourceProjection = 'EPSG:4326'; // replace with your source projection
+            const destinationProjection = 'EPSG:2202'; // replace with your destination projection
+
+            // Reproject the coordinate
+            const reprojectedCoordinate = proj4(sourceProjection, destinationProjection, [parseFloat(coordinate.lng), parseFloat(coordinate.lat)]);
+
+            console.log('reprojectedCoordinate:', reprojectedCoordinate);
+            this.markCoordinate(reprojectedCoordinate);
+
             // Toggle the second drawer
             this.$store.commit('openSecondDrawer');
             this.fetchFeatures(); // dispatch the fetchFeatures action
