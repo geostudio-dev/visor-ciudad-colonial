@@ -23,7 +23,6 @@ export default {
         };
     },
     mounted() {
-        console.log('mapLayers in WebMap.vue:', this.mapLayers); // print the value of mapLayers in the WebMap.vue component
         const { lng, lat, zoom, bearing, pitch } = this.modelValue
 
         const map = new mapboxgl.Map({
@@ -46,7 +45,6 @@ export default {
                 const layerName = layer.dataset.alternate;
                 const bbox = '{bbox-epsg-3857}';
                 const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
-                //console.log(newUrl);
 
                 // Create variables for storing the "opacity" and "visibility" properties of each layer
                 const layerOpacity = layer.opacity;
@@ -114,31 +112,50 @@ export default {
         tracedFeature(newFeature) {
             if (this.tracedFeatureId) {
                 // Remove the old feature from the map
-                this.map.removeLayer(this.tracedFeatureId);
+                this.map.removeLayer(`${this.tracedFeatureId}-fill`);
+                this.map.removeLayer(`${this.tracedFeatureId}-line`);
                 this.map.removeSource(this.tracedFeatureId);
-                }
+            }
 
-                // Generate a unique id for the new feature
-                this.tracedFeatureId = `feature-${Date.now()}`;
+            // Generate a unique id for the new feature
+            this.tracedFeatureId = `feature-${Date.now()}`;
 
-                // Add the new feature to the map
+            // Try to add the new feature to the map
+            try {
+                this.map.addSource(this.tracedFeatureId, {
+                type: 'geojson',
+                data: newFeature,
+                });
+
                 this.map.addLayer({
-                id: this.tracedFeatureId,
-                type: 'fill', // adjust this value as needed
-                source: {
-                    type: 'geojson',
-                    data: newFeature,
-                },
+                id: `${this.tracedFeatureId}-fill`,
+                type: 'fill',
+                source: this.tracedFeatureId,
                 paint: {
                     'fill-color': '#888888', // adjust this value as needed
                     'fill-opacity': 0.4, // adjust this value as needed
                 },
-            });
+                });
+
+                this.map.addLayer({
+                id: `${this.tracedFeatureId}-line`,
+                type: 'line',
+                source: this.tracedFeatureId,
+                paint: {
+                    'line-color': '#00FFFF', // cyan
+                    'line-width': 3, // adjust this value as needed
+                },
+                });
+
+            } catch (error) {
+                console.error('Failed to add feature to map:', error);
+            }
         },
         markedCoordinate() {
             if (this.tracedFeatureId) {
             // Remove the traced feature from the map
-            this.map.removeLayer(this.tracedFeatureId);
+            this.map.removeLayer(`${this.tracedFeatureId}-fill`);
+            this.map.removeLayer(`${this.tracedFeatureId}-line`);
             this.map.removeSource(this.tracedFeatureId);
             this.tracedFeatureId = null;
             }
@@ -159,9 +176,6 @@ export default {
             }
         },
         addMarker(e) {
-            // Log the e.lngLat object
-            console.log('e.lngLat:', e.lngLat);
-            
             // Remove the old marker if it exists
             if (this.marker) {
                 this.marker.remove();
@@ -176,17 +190,11 @@ export default {
             this.map.setCenter(e.lngLat);
 
             const coordinate = { lat: e.lngLat.lat, lng: e.lngLat.lng };
-
-            // Log the coordinate object
-            console.log('coordinate:', coordinate);
-
             const sourceProjection = 'EPSG:4326'; // replace with your source projection
             const destinationProjection = 'EPSG:2202'; // replace with your destination projection
 
             // Reproject the coordinate
             const reprojectedCoordinate = proj4(sourceProjection, destinationProjection, [parseFloat(coordinate.lng), parseFloat(coordinate.lat)]);
-
-            console.log('reprojectedCoordinate:', reprojectedCoordinate);
             this.markCoordinate(reprojectedCoordinate);
 
             // Toggle the second drawer

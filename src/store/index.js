@@ -15,7 +15,6 @@ export default createStore({
   },
   getters: {
     mapLayers: state => {
-      console.log('mapLayers in store:', state.mapLayers); // print the value of mapLayers in the store
       return state.mapLayers;
     },
     markedCoordinate: state => state.markedCoordinate,
@@ -37,19 +36,15 @@ export default createStore({
           }
         };
       });
-      console.log('Map:', state.selectedMap);
-      console.log('mapLayers in store:', state.mapLayers); // print the value of mapLayers in the store
     },
     clearSelectedMap(state) {
       state.selectedMap = null;
     },
     setMapLayers(state, mapLayers) {
       state.mapLayers = mapLayers;
-      console.log('mapLayers in store:', state.mapLayers); // print the value of mapLayers in the store
     },
     setMapDatasets(state, datasets) {
       state.mapDatasets = datasets;
-      console.log('mapDatasets in store:', state.mapDatasets); // print the value of mapLayers in the store
     },
     toggleLayerVisibility(state, layerIndex) {
       if (state.mapLayers[layerIndex]) {
@@ -67,7 +62,6 @@ export default createStore({
     },
     markCoordinate(state, coordinate) {
       state.markedCoordinate = coordinate;
-      console.log('markedCoordinate', state.markedCoordinate);
     },
     setFeatures(state, features) {
       const modifiedFeatures = features.map(feature => {
@@ -112,7 +106,6 @@ export default createStore({
     
       // Push the modified features to the state
       state.features.push(...modifiedFeatures);
-      console.log('features', state.features);
     },
     resetFeatures(state) {
       state.features = [];
@@ -141,12 +134,8 @@ export default createStore({
         const layerName = layer.name;
   
         // Construct the GetFeature request
-        const getFeatureRequest = `${wfsUrl}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json&cql_filter=INTERSECTS(geometry, POINT(${coordinate[0]} ${coordinate[1]}))`;
-        
-        console.log('coordRequest', coordinate);
-        console.log('getFeatureRequest', getFeatureRequest);
+        const getFeatureRequest = `${wfsUrl}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json&srsName=epsg:4326&cql_filter=INTERSECTS(geometry, POINT(${coordinate[0]} ${coordinate[1]}))`;
         axios.get(getFeatureRequest).then(response => {
-          console.log('Queried', response);
           commit('setFeatures', response.data.features);
         });
       }

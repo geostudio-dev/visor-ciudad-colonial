@@ -57,9 +57,9 @@
         </v-card-actions>
         <v-divider></v-divider>
         <v-card-item>
-          <!--div class="text-overline mb-1">
-            lat: {{ markedCoordinate.lat.toFixed(4) }} - lng: {{ markedCoordinate.lng.toFixed(4) }}
-          </div-->
+          <div class="text-overline mb-1">
+            lat: {{ markedCoordinate[1] }} - lng: {{ markedCoordinate[0] }}
+          </div>
         </v-card-item>
         <v-card-text>
           <!-- content of the panel... -->
@@ -67,7 +67,7 @@
             <v-expansion-panel v-for="(feature, index) in specialFeature" :key="index" class="v-card">
               <v-expansion-panel-title >
                 <template v-slot:actions>
-                  <v-icon color="indigo" icon="mdi-plus" @click="traceFeature(specialFeature.geometry)"></v-icon>
+                  <v-icon color="indigo" icon="mdi-plus" @click="handleClick(feature.geometry)"></v-icon>
                 </template>
                 {{ feature.title }} | {{ feature.properties.attribute_set[0].value }}
               </v-expansion-panel-title>
@@ -78,7 +78,7 @@
             <v-expansion-panel v-for="(feature, index) in otherFeatures" :key="index" class="v-card">
               <v-expansion-panel-title>
                 <template v-slot:actions>
-                  <v-icon color="indigo" icon="mdi-plus" @click="traceFeature(feature.geometry)"></v-icon>
+                  <v-icon color="indigo" icon="mdi-plus" @click="handleClick(feature.geometry)"></v-icon>
                 </template>
                 {{ feature.title }} | {{ firstVisibleAttributes[index].value }}
               </v-expansion-panel-title>
@@ -113,6 +113,9 @@ export default {
   methods: {
     ...mapMutations(['closeSecondDrawer']),
     ...mapActions(['traceFeature']),
+    handleClick(geometry) {
+      this.$store.dispatch('traceFeature', geometry);
+    },
   },
   computed: {
     ...mapGetters(['markedCoordinate']),
@@ -135,20 +138,6 @@ export default {
     },
     title() {
       return this.$store.state.selectedMap ? this.$store.state.selectedMap.title : 'Atlanti';
-    },
-  },
-  watch: {
-    specialFeature(newVal) {
-      if (newVal) {
-        console.log('specialFeature:', newVal);
-      }
-    },
-    visibleAttributes(newVal) {
-      console.log('visibleAttributes:', newVal);
-    },
-
-    firstVisibleAttributes(newVal) {
-      console.log('firstVisibleAttributes:', newVal);
     },
   },
 };
