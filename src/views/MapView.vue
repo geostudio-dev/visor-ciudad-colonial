@@ -86,7 +86,7 @@
                                             <p class="text-caption">{{ layer.dataset.abstract }}</p>
                                             <div class="layer-controls">
                                                 <v-slider class="layer-opacity" color="indigo" min=0 max=1 v-model="layer.opacity" :disabled="!layer.visibility"></v-slider>
-                                                <v-switch class="layer-visibility" color="indigo" v-model="layer.visibility" @change="$store.commit('toggleLayerVisibility', index)"></v-switch>
+                                                <v-switch class="layer-visibility" color="indigo" v-model="layer.visibility" ></v-switch>
                                             </div>
                                             <div class="legend overflow-y-auto">
                                                 <v-img :src="layer.dataset.links[0].url" width="70%" contain ></v-img>
@@ -171,24 +171,28 @@ export default {
     computed: {
         ...mapState(['mapLayers', 'selectedMap']),
         groupedLayers() {
-            return this.mapLayers.reduce((groups, layer) => {
+            const groups = this.mapLayers.reduce((groups, layer) => {
                 if (layer.dataset && layer.dataset.category) {
-                let category;
-                if (layer.dataset.category.identifier === 'boundaries') {
-                    category = 'Límites';
-                } else if (layer.dataset.category.identifier === 'planningCadastre') {
-                    category = 'Ordenamiento';
-                } else {
-                    category = layer.dataset.category.identifier;
-                }
+                    let category;
+                    if (layer.dataset.category.identifier === 'boundaries') {
+                        category = 'Límites';
+                    } else if (layer.dataset.category.identifier === 'planningCadastre') {
+                        category = 'Ordenamiento';
+                    } else {
+                        category = layer.dataset.category.identifier;
+                    }
 
-                if (!groups[category]) {
-                    groups[category] = [];
-                }
-                groups[category].push(layer);
+                    if (!groups[category]) {
+                        groups[category] = [];
+                    }
+                    groups[category].push(layer);
                 }
                 return groups;
             }, {});
+
+            //console.log(groups);  // Log `groupedLayers` in the console
+
+            return groups;
         },
     },
     mounted() {
