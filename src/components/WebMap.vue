@@ -143,7 +143,7 @@ export default {
                 type: 'line',
                 source: this.tracedFeatureId,
                 paint: {
-                    'line-color': '#00FFFF', // cyan
+                    'line-color': '#04BF55', // accent color
                     'line-width': 3, // adjust this value as needed
                 },
                 });
@@ -182,8 +182,17 @@ export default {
                 this.marker.remove();
             }
 
+            // Create a new HTML element
+            let el = document.createElement('div');
+            el.className = 'marker';
+            el.style.backgroundColor = '#F2BD1D'; //error color
+            el.style.border = '2px solid white';
+            el.style.borderRadius = '50%';
+            el.style.width = '20px';
+            el.style.height = '20px';
+
             // Create a new marker and add it to the map at the clicked location
-            this.marker = new mapboxgl.Marker()
+            this.marker = new mapboxgl.Marker(el)
                 .setLngLat(e.lngLat)
                 .addTo(this.map);
 
