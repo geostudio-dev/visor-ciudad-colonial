@@ -87,7 +87,6 @@
                                             <div class="layer-controls">
                                                 <v-slider class="layer-opacity" color="indigo" min=0 max=1 v-model="layer.opacity" :disabled="!layer.visibility"></v-slider>
                                                 <v-switch class="layer-visibility" color="indigo" v-model="layer.visibility" ></v-switch>
-                                                <!--v-switch class="layer-visibility" color="indigo" v-model="layer.visibility" @change="$store.commit('toggleLayerVisibility', index)" @change="$store.commit('toggleLayerVisibility', layer.pk)"></v-switch-->
                                             </div>
                                             <div class="legend overflow-y-auto">
                                                 <v-img :src="layer.dataset.links[0].url" width="70%" contain ></v-img>
@@ -191,7 +190,7 @@ export default {
                 return groups;
             }, {});
 
-            console.log(groups);  // Log `groupedLayers` in the console
+            //console.log(groups);  // Log `groupedLayers` in the console
 
             return groups;
         },

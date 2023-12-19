@@ -47,17 +47,6 @@ export default createStore({
     setMapDatasets(state, datasets) {
       state.mapDatasets = datasets;
     },
-    toggleLayerVisibility(state, pk) {
-      console.log(`Received pk: ${pk}`);  // Log received pk
-      const layerIndex = state.mapLayers.findIndex(layer => layer.pk === pk);
-      console.log(`Found layer with index ${layerIndex}`);  // Log found layer index
-      if (layerIndex !== -1) {
-        const layer = { ...state.mapLayers[layerIndex], visibility: !state.mapLayers[layerIndex].visibility };
-        state.mapLayers[layerIndex] = layer;
-        console.log(`Toggled visibility for layer with pk ${pk} to ${state.mapLayers[layerIndex].visibility}`);  // Log visibility change
-        console.log('Updated mapLayers:', state.mapLayers);  // Log updated mapLayers
-      }
-    },
     setLayerOpacity(state, { layerIndex, opacity }) {
       state.mapLayers[layerIndex].opacity = opacity;
     },
