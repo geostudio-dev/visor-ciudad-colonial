@@ -84,7 +84,7 @@ export default {
 </script>
 
 <style scoped>
-.text-wrap {
+.v-card-title.text-wrap {
   white-space: normal;
   line-height: 1.5;
 }
