@@ -35,8 +35,8 @@
                                 </v-row>
                             </v-form>
                             <div class="text-caption">
-                                Latitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
-                                Longitude: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
+                                {{ labels[0] }}: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lat.toFixed(4) : location.lat.toFixed(4) }} |
+                                {{ labels[1] }}: {{ currentCRS === 'EPSG:2202' ? reprojectedLocation.lng.toFixed(4) : location.lng.toFixed(4) }} |
                                 Zoom: {{ location.zoom.toFixed(2) }} 
                                 <template v-if="location.bearing">| Bearing: {{ location.bearing.toFixed(2) }} | </template>
                                 <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
@@ -48,7 +48,7 @@
                                     <v-form @submit.prevent="reprojectAndEmit">
                                         <v-text-field
                                         v-model="reprojectedLocation.lat"
-                                        label="Latitude"
+                                        :label="labels[0]"
                                         :rules="rules"
                                         ></v-text-field>
                                     </v-form>
@@ -57,7 +57,7 @@
                                     <v-form @submit.prevent="reprojectAndEmit">
                                         <v-text-field
                                         v-model="reprojectedLocation.lng"
-                                        label="Longitude"
+                                        :label="labels[1]"
                                         :rules="rules"
                                         ></v-text-field>
                                     </v-form>
@@ -211,6 +211,14 @@ export default {
             //console.log(groups);  // Log `groupedLayers` in the console
 
             return groups;
+        },
+        labels() {
+            if (this.currentCRS === 'EPSG:2202') {
+                return ['Norte', 'Este'];
+            } else if (this.currentCRS === 'EPSG:4326') {
+                return ['Latitude', 'Longitude'];
+            }
+            return [];
         },
     },
     mounted() {
