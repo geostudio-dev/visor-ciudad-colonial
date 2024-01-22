@@ -258,4 +258,28 @@ export default {
     width: 100vw;
 }
 
+@keyframes pulse {
+    0% {
+        transform: scale(0.1, 0.1);
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        transform: scale(4, 4);
+        opacity: 0;
+    }
+}
+
+.marker::after {
+    content: "";
+    display: block;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    animation: pulse 2s infinite;
+}
 </style>
