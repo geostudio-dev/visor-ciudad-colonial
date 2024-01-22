@@ -4,7 +4,7 @@
         <div ref="mapContainer" class="map-container">
             <Map v-model="location" :mapLayers="mapLayers" ref="webMap" />
         </div>
-        <div id="sidebar" class="container">
+        <div id="sidebar" class="container" style="max-height: 80vh; overflow-y: auto;">
             <v-card variant="flat" class="mx-auto bg-secondary on-secondary" max-width="400">
                 <v-tabs
                     v-model="tab"
@@ -94,7 +94,7 @@
                         </v-col>
                     </v-row>
                 </v-card-title>
-                <v-card-text>
+                <v-card-text style="max-height: 400px; overflow-y: auto;">
                     <!--Layers panel-->
                     <v-expansion-panels>
                         <v-expansion-panel v-for="(group, category) in groupedLayers" :key="category" class="v-card">
