@@ -35,8 +35,8 @@
                                 </v-row>
                             </v-form>
                             <div class="text-caption">
-                                {{ labels[0] }}: {{ currentCRS === 'EPSG:2202' ? parseFloat(reprojectedLocation.lat) : parseFloat(location.lat) }} |
-                                {{ labels[1] }}: {{ currentCRS === 'EPSG:2202' ? parseFloat(reprojectedLocation.lng) : parseFloat(location.lng) }} |
+                                {{ labels[0] }}: {{ currentCRS === 'EPSG:2202' ? parseFloat(reprojectedLocation.lat.toFixed(2)) : parseFloat(location.lat.toFixed(2)) }} |
+                                {{ labels[1] }}: {{ currentCRS === 'EPSG:2202' ? parseFloat(reprojectedLocation.lng.toFixed(2)) : parseFloat(location.lng.toFixed(2)) }} |
                                 Zoom: {{ location.zoom.toFixed(2) }} 
                                 <template v-if="location.bearing">| Bearing: {{ location.bearing.toFixed(2) }} | </template>
                                 <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
