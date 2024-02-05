@@ -210,6 +210,8 @@ export default {
                         category = 'Límites';
                     } else if (layer.dataset.category.identifier === 'planningCadastre') {
                         category = 'Ordenamiento';
+                    } else if (layer.dataset.category.identifier === 'transportation') {
+                        category = 'Transporte';
                     } else {
                         category = layer.dataset.category.identifier;
                     }
