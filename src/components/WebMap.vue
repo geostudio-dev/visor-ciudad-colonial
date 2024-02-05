@@ -218,8 +218,8 @@ export default {
             // Create a new HTML element
             let el = document.createElement('div');
             el.className = 'marker';
-            el.style.backgroundColor = '#04BF55'; //accent color
-            el.style.border = '2px solid white';
+            el.style.backgroundColor = '#404040'; //dark color
+            el.style.border = '3px solid white';
             el.style.borderRadius = '50%';
             el.style.width = '20px';
             el.style.height = '20px';
@@ -267,7 +267,7 @@ export default {
         opacity: 1;
     }
     100% {
-        transform: scale(4, 4);
+        transform: scale(6, 6);
         opacity: 0;
     }
 }
