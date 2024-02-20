@@ -158,7 +158,7 @@ export default {
 
             const map = new mapboxgl.Map({
                 container: this.$refs.mapContainer,
-                style: "mapbox://styles/mapbox/light-v11",
+                style: process.env.VUE_APP_DEFAULT_MAP_STYLE,
                 center: [lng, lat],
                 bearing,
                 pitch,
@@ -178,7 +178,7 @@ export default {
             }
             },
             addLayerToMap(map, layer) {
-            const baseUrl = 'https://mapas.alcaldiademaracaibo.org/geoserver/ows';
+            const baseUrl = `${process.env.VUE_APP_NODE_URL}${process.env.VUE_APP_WFS_SERVER_URL}`;
             const layerName = layer.dataset.alternate;
             const bbox = '{bbox-epsg-3857}';
             const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
