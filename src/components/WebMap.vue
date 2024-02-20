@@ -5,7 +5,7 @@
 
 <script>
 import mapboxgl from "mapbox-gl";
-mapboxgl.accessToken = "pk.eyJ1IjoiZ2Vvc3R1ZGlvIiwiYSI6ImNrNWk5Mmp5eDBjNHQzbW10M3d6NzI1Y28ifQ.MPmtingHT1zi_Wk5ZxW8wA"
+mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { mapMutations, mapActions, mapState } from 'vuex';
 import proj4 from 'proj4';
