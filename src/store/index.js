@@ -190,7 +190,7 @@ export default createStore({
             service: 'WFS',
             version: '2.0.0',
             request: 'GetFeature',
-            typeName: 'geonode:junta_de_vecinos',
+            typeName: 'geonode:juntas_vecinos',
             outputFormat: 'application/json',
             srsName: 'EPSG:4326',
             // Add any other parameters you need...
