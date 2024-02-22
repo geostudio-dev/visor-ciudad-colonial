@@ -109,7 +109,7 @@ export default {
     return {
       drawer: false,  // Initialize `drawer` to `false`
       activePanel: 0,
-      logo: require('@/assets/alcaldia-de-maracaibo-logo-web.png'), // Add your logo here
+      logo: require('@/assets/Logo-cultura.png'), // Add your logo here
     };
   },
   methods: {

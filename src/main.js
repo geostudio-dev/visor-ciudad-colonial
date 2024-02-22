@@ -19,11 +19,11 @@ const vuetify = createVuetify({
       maracaibo: {
         dark: false,
         colors: {
-          primary: '#025939',
+          primary: '#6983B4',
           secondary: '#F2F2F2',
-          accent: '#04BF55',
-          error: '#F2BD1D',
-          'secondary-darken-1': '#404040',
+          accent: '#A38D80',
+          error: '#D56498',
+          'secondary-darken-1': '#9ABED8',
         },
       }
     },

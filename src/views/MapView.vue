@@ -165,7 +165,7 @@ export default {
                 name: 'Sistema de Información Territorial - SIT',
                 site: 'Visor de Mapas | Consulta Ciudadana',
                 details: 'Alcaldía de Maracaibo - Centro de Procesamiento Urbano (CPU)',
-                logoPath: require('@/assets/alcaldia-de-maracaibo-logo-web.png'),
+                logoPath: require('@/assets/Logo-cultura.png'),
                 // map name fetched from GeoNode API
                 map: 'Ordenanza de Zonificación Urbana',
 
