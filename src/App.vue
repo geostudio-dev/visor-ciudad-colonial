@@ -123,10 +123,10 @@ export default {
     ...mapGetters(['markedCoordinate']),
     ...mapState(['markedCoordinate', 'features']),
     specialFeature() {
-      return this.features.filter(feature => feature.title === 'Ordenanza Zonificación de Maracaibo');
+      return this.features.filter(feature => feature.title === 'Usos y Vocación');
     },
     otherFeatures() {
-      return this.features.filter(feature => feature.title !== 'Ordenanza Zonificación de Maracaibo');
+      return this.features.filter(feature => feature.title !== 'Usos y Vocación');
     },
     visibleAttributes() {
       return this.otherFeatures.map(feature => {

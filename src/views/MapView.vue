@@ -154,22 +154,13 @@ export default {
     },
     data() {
         // Define the EPSG:32619 projection
-        //proj4.defs("EPSG:32619", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+        proj4.defs("EPSG:32619", "+proj=utm +zone=19 +datum=WGS84 +units=m +no_defs +type=crs");
         return {
             currentCRS: 'EPSG:32619',
             items: [
                 { text: 'WGS84', value: 'EPSG:4326' },
                 { text: 'UTM-19N', value: 'EPSG:32619' },
             ],
-            session: {
-                name: 'Sistema de Información Territorial - SIT',
-                site: 'Visor de Mapas | Consulta Ciudadana',
-                details: 'Alcaldía de Maracaibo - Centro de Procesamiento Urbano (CPU)',
-                logoPath: require('@/assets/Logo-cultura.png'),
-                // map name fetched from GeoNode API
-                map: 'Ordenanza de Zonificación Urbana',
-
-            },
             location: {
                 lng: -69.8862049827,
                 lat: 18.4733777998,
