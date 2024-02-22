@@ -1,5 +1,8 @@
 import { createStore } from 'vuex'
 import axios from 'axios';
+//axios.defaults.baseURL = process.env.VUE_APP_NODE_URL;
+//axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+
 import * as turf from '@turf/turf';
 
 export default createStore({
@@ -155,7 +158,9 @@ export default createStore({
   },
   actions: {
     async fetchMaps({ commit }) {
-      const response = await axios.get("https://mapas.alcaldiademaracaibo.org/api/v2/maps");
+      const url = process.env.VUE_APP_NODE_URL;
+      const api = process.env.VUE_APP_NODE_API_ENDPOINT;
+      const response = await axios.get(`${url}${api}maps/`);
       commit('setMaps', response.data.maps);
       // Return the maps
       return response.data.maps;
@@ -164,7 +169,7 @@ export default createStore({
       commit('resetFeatures'); // reset features to an empty array
   
       const coordinate = state.markedCoordinate;
-      const wfsUrl = 'https://mapas.alcaldiademaracaibo.org/geoserver/ows';
+      const wfsUrl = `${process.env.VUE_APP_NODE_URL}${process.env.VUE_APP_WFS_SERVER_URL}`;
   
       // Loop over the mapLayers array
       for (const layer of state.mapLayers) {
@@ -179,12 +184,13 @@ export default createStore({
     },
     async fetchSearchFeatures({commit}) {
       try {
-        const response = await axios.get('https://mapas.alcaldiademaracaibo.org/geoserver/ows', {
+        const wfsUrl = `${process.env.VUE_APP_NODE_URL}${process.env.VUE_APP_WFS_SERVER_URL}`;
+        const response = await axios.get(wfsUrl, {
           params: {
             service: 'WFS',
             version: '2.0.0',
             request: 'GetFeature',
-            typeName: 'geonode:sectores_barrios_urb',
+            typeName: 'geonode:juntas_vecinos',
             outputFormat: 'application/json',
             srsName: 'EPSG:4326',
             // Add any other parameters you need...
@@ -205,7 +211,9 @@ export default createStore({
     async fetchDatasets({ commit, state }) {
       const datasets = [];
       for (const layer of state.mapLayers) {
-        const response = await axios.get(`https://mapas.alcaldiademaracaibo.org/api/v2/datasets/${layer.dataset.pk}`);
+        const url = process.env.VUE_APP_NODE_URL;
+        const api = process.env.VUE_APP_NODE_API_ENDPOINT;
+        const response = await axios.get(`${url}${api}datasets/${layer.dataset.pk}`);
         datasets.push(response.data);
       }
       commit('setMapDatasets', datasets);
