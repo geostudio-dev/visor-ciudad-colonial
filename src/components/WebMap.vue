@@ -15,7 +15,7 @@ export default {
     name: "WebMap",
     props: ["modelValue", "mapLayers"],
     data() {
-        //proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+        proj4.defs("EPSG:32619", "+proj=utm +zone=19 +datum=WGS84 +units=m +no_defs +type=crs");
         return {
             map: null,
             mapContainer: null,

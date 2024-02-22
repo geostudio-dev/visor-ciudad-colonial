@@ -65,6 +65,7 @@ export default createStore({
       state.markedCoordinate = coordinate;
     },
     setFeatures(state, features) {
+      console.log('features to set', features);
       const modifiedFeatures = features.map(feature => {
         // Remove unwanted characters from feature.id
         const refactoredId = feature.id.split('.')[0];
@@ -73,7 +74,7 @@ export default createStore({
         const correspondingDataset = state.mapDatasets.find(dataset => dataset.dataset.name === refactoredId);
     
         // If a corresponding dataset is found, append the corresponding dataset's attribute_Set to the feature's properties
-        if (correspondingDataset) {
+        if (correspondingDataset && correspondingDataset.dataset && correspondingDataset.dataset.attribute_set) {
           feature.properties.attribute_set = correspondingDataset.dataset.attribute_set.map(attribute => {
             return {
               ...attribute,
@@ -102,6 +103,8 @@ export default createStore({
 
           // Set feature.featureinfo_custom_template with transformed template
           feature.featureinfo_custom_template = template;
+        } else {
+          feature.properties.attribute_set = [];
         }
         feature.title = correspondingDataset.dataset.title;
     
@@ -176,7 +179,7 @@ export default createStore({
         const layerName = layer.name;
   
         // Construct the GetFeature request
-        const getFeatureRequest = `${wfsUrl}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json&srsName=epsg:4326&cql_filter=INTERSECTS(geometry, POINT(${coordinate[0]} ${coordinate[1]}))`;
+        const getFeatureRequest = `${wfsUrl}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json&srsName=epsg:4326&cql_filter=INTERSECTS(geom, POINT(${coordinate[0]} ${coordinate[1]}))`;
         axios.get(getFeatureRequest).then(response => {
           commit('setFeatures', response.data.features);
         });
