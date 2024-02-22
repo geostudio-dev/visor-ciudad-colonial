@@ -25,8 +25,8 @@
                                             v-model="selectedPlace"
                                             :items="placeNames"
                                             label="Lugar"
-                                            item-text="comunidad"
-                                            item-value="comunidad"
+                                            item-text="nombre"
+                                            item-value="nombre"
                                         ></v-autocomplete>
                                     </v-col>
                                     <v-col cols="2">
@@ -35,8 +35,8 @@
                                 </v-row>
                             </v-form>
                             <div class="text-caption">
-                                {{ labels[0] }}: {{ currentCRS === 'EPSG:2202' ? parseFloat(reprojectedLocation.lat.toFixed(2)) : parseFloat(location.lat.toFixed(2)) }} |
-                                {{ labels[1] }}: {{ currentCRS === 'EPSG:2202' ? parseFloat(reprojectedLocation.lng.toFixed(2)) : parseFloat(location.lng.toFixed(2)) }} |
+                                {{ labels[0] }}: {{ currentCRS === 'EPSG:32619' ? parseFloat(reprojectedLocation.lat.toFixed(2)) : parseFloat(location.lat.toFixed(2)) }} |
+                                {{ labels[1] }}: {{ currentCRS === 'EPSG:32619' ? parseFloat(reprojectedLocation.lng.toFixed(2)) : parseFloat(location.lng.toFixed(2)) }} |
                                 Zoom: {{ location.zoom.toFixed(2) }} 
                                 <template v-if="location.bearing">| Bearing: {{ location.bearing.toFixed(2) }} | </template>
                                 <template v-if="location.pitch"> Pitch: {{ location.pitch.toFixed(2) }} | </template>
@@ -45,7 +45,7 @@
                         <v-window-item value="coordinate">
                             <v-row class="d-flex align-center justify-space-between">
                                 <v-col cols="5">
-                                    <v-form v-if="currentCRS === 'EPSG:2202'" @submit.prevent="reprojectAndEmit">
+                                    <v-form v-if="currentCRS === 'EPSG:32619'" @submit.prevent="reprojectAndEmit">
                                         <v-text-field
                                         v-model="reprojectedLocation.lat"
                                         :label="labels[0]"
@@ -61,7 +61,7 @@
                                     </v-form>
                                 </v-col>
                                 <v-col cols="5">
-                                    <v-form v-if="currentCRS === 'EPSG:2202'" @submit.prevent="reprojectAndEmit">
+                                    <v-form v-if="currentCRS === 'EPSG:32619'" @submit.prevent="reprojectAndEmit">
                                         <v-text-field
                                         v-model="reprojectedLocation.lng"
                                         :label="labels[1]"
@@ -131,7 +131,7 @@
                             ></v-select>
                         </v-col>
                         <v-col cols="2">
-                            <v-btn size="small" icon="mdi-home" @click="location = { lng: -71.6930587033, lat: 10.6775887114, zoom: 11.6, pitch: 0, bearing: 0 }" color="accent"></v-btn>
+                            <v-btn size="small" icon="mdi-home" @click="location = { lng: -69.8862049827, lat: 18.4733777998, zoom: 15.25, pitch: 0, bearing: 0 }" color="accent"></v-btn>
                         </v-col>
                     </v-row>
                 </v-card-actions>
@@ -153,33 +153,24 @@ export default {
         Map,
     },
     data() {
-        // Define the EPSG:2202 projection
-        proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+        // Define the EPSG:32619 projection
+        proj4.defs("EPSG:32619", "+proj=utm +zone=19 +datum=WGS84 +units=m +no_defs +type=crs");
         return {
-            currentCRS: 'EPSG:2202',
+            currentCRS: 'EPSG:32619',
             items: [
                 { text: 'WGS84', value: 'EPSG:4326' },
-                { text: 'REGVEN', value: 'EPSG:2202' },
+                { text: 'UTM-19N', value: 'EPSG:32619' },
             ],
-            session: {
-                name: 'Sistema de Información Territorial - SIT',
-                site: 'Visor de Mapas | Consulta Ciudadana',
-                details: 'Alcaldía de Maracaibo - Centro de Procesamiento Urbano (CPU)',
-                logoPath: require('@/assets/alcaldia-de-maracaibo-logo-web.png'),
-                // map name fetched from GeoNode API
-                map: 'Ordenanza de Zonificación Urbana',
-
-            },
             location: {
-                lng: -71.6930587033,
-                lat: 10.6775887114,
+                lng: -69.8862049827,
+                lat: 18.4733777998,
                 bearing: 0,
                 pitch: 0,
-                zoom: 11.6,
+                zoom: 15.25,
             },
             reprojectedLocation: {
-                lng: 205383.1024547202,
-                lat: 1181614.2195329086,
+                lng: 406434.5239057111,
+                lat: 2042788.8059827371,
             },
             rules: [
                 value => {
@@ -196,10 +187,10 @@ export default {
         ...mapState(['mapLayers', 'selectedMap', 'searchFeatures']),
         placeNames() {
             return this.searchFeatures.map(feature => {
-            if (typeof feature.properties.comunidad !== 'string') {
-                console.warn('Invalid comunidad property:', feature.properties.comunidad);
+            if (typeof feature.properties.nombre !== 'string') {
+                console.warn('Invalid nombre property:', feature.properties.nombre);
             }
-            return feature.properties.comunidad;
+            return feature.properties.nombre;
             });
         },
         groupedLayers() {
@@ -212,6 +203,10 @@ export default {
                         category = 'Ordenamiento';
                     } else if (layer.dataset.category.identifier === 'transportation') {
                         category = 'Transporte';
+                    } else if (layer.dataset.category.identifier === 'structure') {
+                        category = 'Estructura Urbana';
+                    } else if (layer.dataset.category.identifier === 'location') {
+                        category = 'Lugares';
                     } else {
                         category = layer.dataset.category.identifier;
                     }
@@ -229,7 +224,7 @@ export default {
             return groups;
         },
         labels() {
-            if (this.currentCRS === 'EPSG:2202') {
+            if (this.currentCRS === 'EPSG:32619') {
                 return ['Norte', 'Este'];
             } else if (this.currentCRS === 'EPSG:4326') {
                 return ['Latitude', 'Longitude'];
@@ -242,8 +237,8 @@ export default {
     },
     watch: {
         location(newLocation) {
-            // Reproject the coordinates to EPSG:2202 whenever the location changes
-            const [lng, lat] = proj4('EPSG:4326', 'EPSG:2202', [newLocation.lng, newLocation.lat]);
+            // Reproject the coordinates to EPSG:32619 whenever the location changes
+            const [lng, lat] = proj4('EPSG:4326', 'EPSG:32619', [newLocation.lng, newLocation.lat]);
             this.reprojectedLocation = { lng, lat };
         },
     },
@@ -264,8 +259,8 @@ export default {
             window.open(`${detailUrl}/metadata_detail`, '_blank');
         },
         reprojectAndEmit() {
-            if (this.currentCRS === 'EPSG:2202') {
-                const sourceProjection = 'EPSG:2202'; // adjust this value as needed
+            if (this.currentCRS === 'EPSG:32619') {
+                const sourceProjection = 'EPSG:32619'; // adjust this value as needed
                 const targetProjection = 'EPSG:4326';
                 const [reprojectedLng, reprojectedLat] = proj4(sourceProjection, targetProjection, [parseFloat(this.reprojectedLocation.lng), parseFloat(this.reprojectedLocation.lat)]);
                 this.$refs.webMap.addMarker({ lngLat: { lat: reprojectedLat, lng: reprojectedLng } });
@@ -285,7 +280,7 @@ export default {
             }
         },
         filterAndEmit() {
-            const filteredFeatures = this.searchFeatures.filter(feature => feature.properties.comunidad === this.selectedPlace);
+            const filteredFeatures = this.searchFeatures.filter(feature => feature.properties.nombre === this.selectedPlace);
             console.log(filteredFeatures);
             filteredFeatures.forEach(feature => {
                 const [lng, lat] = feature.geometry.coordinates;

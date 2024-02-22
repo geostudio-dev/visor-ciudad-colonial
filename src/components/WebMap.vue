@@ -5,7 +5,7 @@
 
 <script>
 import mapboxgl from "mapbox-gl";
-mapboxgl.accessToken = "pk.eyJ1IjoiZ2Vvc3R1ZGlvIiwiYSI6ImNrNWk5Mmp5eDBjNHQzbW10M3d6NzI1Y28ifQ.MPmtingHT1zi_Wk5ZxW8wA"
+mapboxgl.accessToken = process.env.VUE_APP_MAPBOX_ACCESS_TOKEN;
 import 'mapbox-gl/dist/mapbox-gl.css';
 import { mapMutations, mapActions, mapState } from 'vuex';
 import proj4 from 'proj4';
@@ -15,7 +15,7 @@ export default {
     name: "WebMap",
     props: ["modelValue", "mapLayers"],
     data() {
-        proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+        proj4.defs("EPSG:32619", "+proj=utm +zone=19 +datum=WGS84 +units=m +no_defs +type=crs");
         return {
             map: null,
             mapContainer: null,
@@ -115,7 +115,7 @@ export default {
                 type: 'line',
                 source: this.tracedFeatureId,
                 paint: {
-                    'line-color': '#04BF55', // accent color
+                    'line-color': '#6983B4', // accent color
                     'line-width': 3, // adjust this value as needed
                 },
                 });
@@ -158,7 +158,7 @@ export default {
 
             const map = new mapboxgl.Map({
                 container: this.$refs.mapContainer,
-                style: "mapbox://styles/mapbox/light-v11",
+                style: process.env.VUE_APP_DEFAULT_MAP_STYLE,
                 center: [lng, lat],
                 bearing,
                 pitch,
@@ -178,7 +178,7 @@ export default {
             }
             },
             addLayerToMap(map, layer) {
-            const baseUrl = 'https://mapas.alcaldiademaracaibo.org/geoserver/ows';
+            const baseUrl = `${process.env.VUE_APP_NODE_URL}${process.env.VUE_APP_WFS_SERVER_URL}`;
             const layerName = layer.dataset.alternate;
             const bbox = '{bbox-epsg-3857}';
             const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
@@ -237,7 +237,7 @@ export default {
 
             const coordinate = { lat: e.lngLat.lat, lng: e.lngLat.lng };
             const sourceProjection = 'EPSG:4326'; // replace with your source projection
-            const destinationProjection = 'EPSG:2202'; // replace with your destination projection
+            const destinationProjection = 'EPSG:32619'; // replace with your destination projection
 
             // Reproject the coordinate
             const reprojectedCoordinate = proj4(sourceProjection, destinationProjection, [parseFloat(coordinate.lng), parseFloat(coordinate.lat)]);

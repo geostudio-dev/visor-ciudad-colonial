@@ -109,7 +109,7 @@ export default {
     return {
       drawer: false,  // Initialize `drawer` to `false`
       activePanel: 0,
-      logo: require('@/assets/alcaldia-de-maracaibo-logo-web.png'), // Add your logo here
+      logo: require('@/assets/Logo-cultura.png'), // Add your logo here
     };
   },
   methods: {
@@ -123,10 +123,10 @@ export default {
     ...mapGetters(['markedCoordinate']),
     ...mapState(['markedCoordinate', 'features']),
     specialFeature() {
-      return this.features.filter(feature => feature.title === 'Ordenanza Zonificación de Maracaibo');
+      return this.features.filter(feature => feature.title === 'Usos y Vocación');
     },
     otherFeatures() {
-      return this.features.filter(feature => feature.title !== 'Ordenanza Zonificación de Maracaibo');
+      return this.features.filter(feature => feature.title !== 'Usos y Vocación');
     },
     visibleAttributes() {
       return this.otherFeatures.map(feature => {
