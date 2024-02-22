@@ -25,8 +25,8 @@
                                             v-model="selectedPlace"
                                             :items="placeNames"
                                             label="Lugar"
-                                            item-text="comunidad"
-                                            item-value="comunidad"
+                                            item-text="nombre"
+                                            item-value="nombre"
                                         ></v-autocomplete>
                                     </v-col>
                                     <v-col cols="2">
@@ -196,10 +196,10 @@ export default {
         ...mapState(['mapLayers', 'selectedMap', 'searchFeatures']),
         placeNames() {
             return this.searchFeatures.map(feature => {
-            if (typeof feature.properties.comunidad !== 'string') {
-                console.warn('Invalid comunidad property:', feature.properties.comunidad);
+            if (typeof feature.properties.nombre !== 'string') {
+                console.warn('Invalid nombre property:', feature.properties.nombre);
             }
-            return feature.properties.comunidad;
+            return feature.properties.nombre;
             });
         },
         groupedLayers() {
@@ -212,6 +212,10 @@ export default {
                         category = 'Ordenamiento';
                     } else if (layer.dataset.category.identifier === 'transportation') {
                         category = 'Transporte';
+                    } else if (layer.dataset.category.identifier === 'structure') {
+                        category = 'Estructura Urbana';
+                    } else if (layer.dataset.category.identifier === 'location') {
+                        category = 'Lugares';
                     } else {
                         category = layer.dataset.category.identifier;
                     }
@@ -285,7 +289,7 @@ export default {
             }
         },
         filterAndEmit() {
-            const filteredFeatures = this.searchFeatures.filter(feature => feature.properties.comunidad === this.selectedPlace);
+            const filteredFeatures = this.searchFeatures.filter(feature => feature.properties.nombre === this.selectedPlace);
             console.log(filteredFeatures);
             filteredFeatures.forEach(feature => {
                 const [lng, lat] = feature.geometry.coordinates;
