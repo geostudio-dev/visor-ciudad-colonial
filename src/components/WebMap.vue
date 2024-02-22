@@ -15,7 +15,7 @@ export default {
     name: "WebMap",
     props: ["modelValue", "mapLayers"],
     data() {
-        proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
+        //proj4.defs("EPSG:2202", "+proj=utm +zone=19 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs");
         return {
             map: null,
             mapContainer: null,
@@ -115,7 +115,7 @@ export default {
                 type: 'line',
                 source: this.tracedFeatureId,
                 paint: {
-                    'line-color': '#04BF55', // accent color
+                    'line-color': '#6983B4', // accent color
                     'line-width': 3, // adjust this value as needed
                 },
                 });
@@ -237,7 +237,7 @@ export default {
 
             const coordinate = { lat: e.lngLat.lat, lng: e.lngLat.lng };
             const sourceProjection = 'EPSG:4326'; // replace with your source projection
-            const destinationProjection = 'EPSG:2202'; // replace with your destination projection
+            const destinationProjection = 'EPSG:32619'; // replace with your destination projection
 
             // Reproject the coordinate
             const reprojectedCoordinate = proj4(sourceProjection, destinationProjection, [parseFloat(coordinate.lng), parseFloat(coordinate.lat)]);

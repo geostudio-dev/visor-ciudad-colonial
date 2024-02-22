@@ -4,10 +4,11 @@
             <v-row>
                 <v-col cols="12" md="6">
                     <v-card class="mx-auto" variant="flat">
-                        <v-card-title class="text-h3 text-wrap">Mapa de Zonificación Urbana de Maracaibo</v-card-title>
+                        <v-card-title class="text-h3 text-wrap">Mapa de la Ciudad Colonial</v-card-title>
                         <v-card-subtitle class="text-h5">¡Bienvenido!</v-card-subtitle>
                         <v-card-text>
-                            <p>En esta sección podrás consultar el mapa de zonificación urbana del municipio, el cual ha sido preparado por el Centro de Procesamiento Urbano (CPU) para facilitar el acceso a la información del uso del suelo a los ciudadanos.</p>
+                            <p>En esta sección podrás consultar el mapa de de la Ciudad Colonial preparado por el Ministerio de Cultura de la Repúblca dominicana y el ayuntamiento de la Alcaldía del Distrito Nacional (ADN) para facilitar el acceso a la información de zonificación de usos e intervención (Ordenanzas 03-11 y 08-11) a los ciudadanos.</p>
+                            <v-img src="https://datastoreb1d9.blob.core.windows.net/geostudio-assets/organizations/Republica%20Dominicana/Ciudad%20Colonial/alacaldia_distrito_naciona_logo.svg"></v-img>
                             <v-divider></v-divider>
                             <p class="text-caption">Para ver el mapa, haz click en el botón <strong>Ver Mapa</strong> de la tarjeta a continuación.</p>
                             <!--p class="text-caption">Para ver los detalles de un mapa, haz click en el botón <v-icon color="error">mdi-information</v-icon>.</p-->
@@ -47,7 +48,7 @@
         <v-footer fixed class="pa-2 bg-primary on-primary app-footer">
             <v-container fluid>
                 <v-row justify="center" no-gutters>
-                <p>&copy; {{ new Date().getFullYear() }} | <strong><a href="https://www.geostudio.com.co/"> GeoStudio </a></strong> | Alcaldía de Maracaibo</p>
+                <p>&copy; {{ new Date().getFullYear() }} | <strong><a href="https://www.geostudio.com.co/"> GeoStudio </a></strong> | Ministerio de Cultura de la República Dominicana</p>
                 </v-row>
             </v-container>
         </v-footer>
