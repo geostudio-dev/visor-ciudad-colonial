@@ -109,7 +109,7 @@ export default {
     return {
       drawer: false,  // Initialize `drawer` to `false`
       activePanel: 0,
-      logo: require('@/assets/Logo-cultura.png'), // Add your logo here
+      logo: require('@/assets/logo.png'), // Add your logo here
     };
   },
   methods: {
@@ -123,10 +123,10 @@ export default {
     ...mapGetters(['markedCoordinate']),
     ...mapState(['markedCoordinate', 'features']),
     specialFeature() {
-      return this.features.filter(feature => feature.title === 'Usos y Vocación');
+      return this.features.filter(feature => feature.title === 'Usos y Vocación' || feature.title === 'Zonas de Estructuración Urbana');
     },
     otherFeatures() {
-      return this.features.filter(feature => feature.title !== 'Usos y Vocación');
+      return this.features.filter(feature => feature.title !== 'Usos y Vocación' || feature.title !== 'Zonas de Estructuración Urbana');
     },
     visibleAttributes() {
       return this.otherFeatures.map(feature => {
