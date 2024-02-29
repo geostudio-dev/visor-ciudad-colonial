@@ -64,9 +64,16 @@ export default createStore({
     markCoordinate(state, coordinate) {
       state.markedCoordinate = coordinate;
     },
+    /**
+     * Sets the features in the state.
+     *
+     * @param {Object} state - The state object.
+     * @param {Array} features - The features to be set.
+     */
     setFeatures(state, features) {
-      console.log('features to set', features);
-      const modifiedFeatures = features.map(feature => {
+
+      // Iterate over the features and append the corresponding dataset's attribute_Set to the feature's properties
+      let modifiedFeatures = features.map(feature => {
         // Remove unwanted characters from feature.id
         const refactoredId = feature.id.split('.')[0];
     
@@ -110,7 +117,8 @@ export default createStore({
     
         return feature;
       });
-    
+      // Filter out raster layers
+      modifiedFeatures = modifiedFeatures.filter(feature => feature.geometry.type !== 'MultyPolygon' && feature.geometry.type !== 'Polygon' && feature.geometry.type !== 'MultiLineString' && feature.geometry.type !== 'LineString' && feature.geometry.type !== 'Point' && feature.geometry.type !== 'MultiPoint');
       // Push the modified features to the state
       state.features.push(...modifiedFeatures);
     },
@@ -176,13 +184,15 @@ export default createStore({
   
       // Loop over the mapLayers array
       for (const layer of state.mapLayers) {
-        const layerName = layer.name;
-  
-        // Construct the GetFeature request
-        const getFeatureRequest = `${wfsUrl}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json&srsName=epsg:4326&cql_filter=INTERSECTS(geom, POINT(${coordinate[0]} ${coordinate[1]}))`;
-        axios.get(getFeatureRequest).then(response => {
-          commit('setFeatures', response.data.features);
-        });
+        if (layer.name !== 'ciudad_colonial:ciudad_colonial_mosaic') {
+          const layerName = layer.name;
+        
+          // Construct the GetFeature request
+          const getFeatureRequest = `${wfsUrl}?service=WFS&version=1.0.0&request=GetFeature&typeName=${layerName}&outputFormat=application/json&srsName=epsg:4326&cql_filter=INTERSECTS(geom, POINT(${coordinate[0]} ${coordinate[1]}))`;
+          axios.get(getFeatureRequest).then(response => {
+            commit('setFeatures', response.data.features);
+          });
+        }
       }
     },
     async fetchSearchFeatures({commit}) {

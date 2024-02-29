@@ -29,7 +29,7 @@ export default {
         if (this.$store.state.mapLayers.length === 0 && this.$store.state.mapDatasets.length === 0) {
             // Fetch the default map
             let maps = await this.$store.dispatch('fetchMaps');
-            let defaultMap = maps.find(map => map.title === "Consulta Ciudadana | Zonificación");
+            let defaultMap = maps.find(map => map.title === "Normatividad urbana de ciudad colonial");
             if (defaultMap) {
                 this.$store.commit('setSelectedMap', defaultMap);
                 await this.$store.dispatch('fetchDatasets');
@@ -172,7 +172,7 @@ export default {
             },
             addLayersToMap(map) {
             if (this.mapLayers) {
-                [...this.mapLayers].reverse().forEach((layer) => {
+                [...this.mapLayers].forEach((layer) => {
                 this.addLayerToMap(map, layer);
                 });
             }

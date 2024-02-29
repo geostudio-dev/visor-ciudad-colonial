@@ -199,14 +199,16 @@ export default {
                     let category;
                     if (layer.dataset.category.identifier === 'boundaries') {
                         category = 'Límites';
-                    } else if (layer.dataset.category.identifier === 'planningCadastre') {
-                        category = 'Ordenamiento';
-                    } else if (layer.dataset.category.identifier === 'transportation') {
-                        category = 'Transporte';
+                    } else if (layer.dataset.category.identifier === 'imageryBaseMapsEarthCover') {
+                        category = 'Imágenes';
                     } else if (layer.dataset.category.identifier === 'structure') {
                         category = 'Estructura Urbana';
+                    } else if (layer.dataset.category.identifier === 'transportation') {
+                        category = 'Transporte';
                     } else if (layer.dataset.category.identifier === 'location') {
                         category = 'Lugares';
+                    } else if (layer.dataset.category.identifier === 'planningCadastre') {
+                        category = 'Ordenamiento';
                     } else {
                         category = layer.dataset.category.identifier;
                     }

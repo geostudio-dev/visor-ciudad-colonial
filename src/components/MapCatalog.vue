@@ -16,7 +16,7 @@
                     </v-card>
                 </v-col>
                 <v-col cols="12" md="6">
-                    <img :src="image" alt="App image" width="650">
+                    <img :src="image" alt="App image" width="550">
                 </v-col>
             </v-row>
         </div>
@@ -67,7 +67,7 @@ export default {
     },
     // data, methods...
     data: () => ({
-        image: require('@/assets/illustration-1.png'),
+        image: require('@/assets/Ciudad-Colonial-de-Santo-Domingo.jpg'),
     }),
     methods: {
         ...mapActions(['fetchDatasets']),

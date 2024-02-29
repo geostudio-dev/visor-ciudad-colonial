@@ -123,10 +123,10 @@ export default {
     ...mapGetters(['markedCoordinate']),
     ...mapState(['markedCoordinate', 'features']),
     specialFeature() {
-      return this.features.filter(feature => feature.title === 'Usos y Vocación' || feature.title === 'Zonas de Estructuración Urbana');
+      return this.features.filter(feature => feature.title === 'Usos & vocación del suelo' || feature.title === 'Zonas de estructuración urbana');
     },
     otherFeatures() {
-      return this.features.filter(feature => feature.title !== 'Usos y Vocación' || feature.title !== 'Zonas de Estructuración Urbana');
+      return this.features.filter(feature => feature.title !== 'Usos & vocación del suelo' || feature.title !== 'Zonas de estructuración urbana');
     },
     visibleAttributes() {
       return this.otherFeatures.map(feature => {
