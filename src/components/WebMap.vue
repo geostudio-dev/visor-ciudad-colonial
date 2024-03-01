@@ -178,7 +178,7 @@ export default {
             }
             },
             addLayerToMap(map, layer) {
-            const baseUrl = `${process.env.VUE_APP_NODE_URL}${process.env.VUE_APP_WFS_SERVER_URL}`;
+            const baseUrl = `${process.env.VUE_APP_NODE_URL}${process.env.VUE_APP_WMS_SERVER_URL}`;
             const layerName = layer.dataset.alternate;
             const bbox = '{bbox-epsg-3857}';
             const newUrl = `${baseUrl}?service=WMS&version=1.1.0&request=GetMap&layers=${layerName}&styles=&bbox=${bbox}&width=256&height=256&srs=EPSG:3857&format=image/png&transparent=true`;
