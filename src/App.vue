@@ -64,18 +64,21 @@
         </v-card-item>
         <v-card-text style="max-height: 80vh; overflow-y: auto;">
           <!-- content of the panel... -->
-          <v-expansion-panels v-model="activePanel" v-if="specialFeature">
+          <v-expansion-panels v-model="activePanel">
             <v-expansion-panel v-for="(feature, index) in specialFeature" :key="index" class="v-card">
               <v-expansion-panel-title >
                 <template v-slot:actions>
                   <v-icon color="accent" icon="mdi-plus" @click="handleClick(feature.geometry)"></v-icon>
                 </template>
-                {{ feature.title }} | {{ feature.properties.attribute_set[0].value }}
+                {{ feature.title }}
               </v-expansion-panel-title>
               <v-expansion-panel-text class="overflow-y-auto" >
                 <div class="wrap-text" v-html="feature.featureinfo_custom_template"></div>
               </v-expansion-panel-text>
             </v-expansion-panel>
+          </v-expansion-panels>
+
+          <!--v-expansion-panels>
             <v-expansion-panel v-for="(feature, index) in otherFeatures" :key="index" class="v-card">
               <v-expansion-panel-title>
                 <template v-slot:actions>
@@ -90,7 +93,7 @@
                 </div>
               </v-expansion-panel-text>
             </v-expansion-panel>
-          </v-expansion-panels>
+          </v-expansion-panels-->
         </v-card-text>
       </v-card>
     </v-navigation-drawer>
@@ -123,7 +126,7 @@ export default {
     ...mapGetters(['markedCoordinate']),
     ...mapState(['markedCoordinate', 'features']),
     specialFeature() {
-      return this.features.filter(feature => feature.title === 'Usos & vocación del suelo' || feature.title === 'Zonas de estructuración urbana');
+      return this.features.filter(feature => feature.title === 'Usos & vocación del suelo' || feature.title === 'Zonas de estructuración urbana' || feature.title === 'Clasificación de inmuebles');
     },
     otherFeatures() {
       return this.features.filter(feature => feature.title !== 'Usos & vocación del suelo' || feature.title !== 'Zonas de estructuración urbana');
